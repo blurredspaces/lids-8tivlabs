@@ -46,7 +46,7 @@ Splash (`index.html`): `--paper` #ffffff, `--ink` #000000. Type is the Mac OS X 
 ## Components
 | Component | Notes |
 |---|---|
-| Name and password prompt (`index.html`) | A real `<input>` sits invisibly behind a mirrored `<span>`. It is a 40-character text field for the name, then becomes a password field. Empty input is ignored. Enter or the mobile Go key submits. |
+| Name and password prompt (`index.html`) | A real `<input>` covers the whole prompt area with transparent text, and what you type is echoed in a `<span>`. A tap lands on the input itself, so phones open the keyboard. Phones ignore `autofocus`, so on touch screens a "Tap to type" hint shows until the field is focused. The field is a 40-character text field for the name, then becomes a password field (`enterkeyhint` next, then go). Between steps it is set `readOnly`, never `disabled`, so it keeps focus and the keyboard stays open. Empty input is ignored. |
 | Totals band | Sits under the "All engagement is organic" chip. Shows Instagram views (red), YouTube Shorts views on @lids, Instagram likes and Instagram comments, each summed across the episodes that have numbers. The note under it says how many episodes each platform covers and when the numbers were pulled. |
 | Chain | An `<ol>` of 5 step cards numbered 01–05 in red, joined by red connectors. Numbering is used because the steps really are a sequence. |
 | Episode slide | For episodes that have Instagram stats. A phone mockup on the left. On the right: episode number, date, status chip and title, then Instagram views (`--num-xl`), a red bar, a 4-column grid with likes and comments followed by any Insights numbers, a dated note for the Insights, and the YouTube strip. |

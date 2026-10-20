@@ -59,18 +59,38 @@
       line-height: 1.7;
       min-height: 5.6em;
       cursor: text;
+      position: relative;
     }
 
     .terminal p { white-space: pre-wrap; overflow-wrap: anywhere; }
 
-    /* the real input is invisible; what you type is echoed in .typed */
+    /*
+      The real input covers the whole prompt with transparent text, so a tap lands
+      on it directly and phones open the keyboard (they ignore autofocus and won't
+      open one for a 1px field). What you type is echoed in .typed.
+    */
     .terminal input {
       position: absolute;
-      opacity: 0;
-      width: 1px;
-      height: 1px;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
       border: 0;
+      outline: none;
+      background: transparent;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      caret-color: transparent;
+      -webkit-appearance: none;
+      appearance: none;
       font-size: 16px; /* stops iOS zooming on focus */
+      cursor: text;
+    }
+    .terminal input::selection { background: transparent; }
+
+    .hint { display: none; margin-top: 8px; font-size: 0.8125rem; color: var(--ink-dim); }
+    @media (pointer: coarse) {
+      .terminal:not(:focus-within) .hint:not([hidden]) { display: block; }
     }
 
     .cursor {
@@ -103,7 +123,8 @@
       <label class="prompt-line" id="prompt-line" for="field">
         <p><span id="prompt">Your name?</span> <span class="typed" id="typed"></span><span class="cursor" aria-hidden="true"></span></p>
       </label>
-      <input id="field" name="name" type="text" maxlength="40" spellcheck="false" autocapitalize="words" autocomplete="off" autofocus>
+      <p class="hint" id="hint" aria-hidden="true">Tap to type</p>
+      <input id="field" name="name" type="text" maxlength="40" spellcheck="false" autocapitalize="words" autocomplete="off" enterkeyhint="next" autofocus>
     </form>
   </main>
 
@@ -114,16 +135,18 @@
     const promptLine = document.getElementById('prompt-line');
     const promptText = document.getElementById('prompt');
     const typed = document.getElementById('typed');
+    const hint = document.getElementById('hint');
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const PROMPTS = { name: 'Your name?', password: 'Password?' };
     let step = 'name';
     let name = '';
+    let busy = false;
 
     const mask = (value) => '•'.repeat(value.length);
     const echo = () => { typed.textContent = step === 'password' ? mask(input.value) : input.value; };
 
-    form.addEventListener('click', (e) => { if (!input.disabled) input.focus(); });
+    form.addEventListener('click', () => { if (!busy) input.focus(); });
     input.addEventListener('input', echo);
 
     function ask(nextStep) {
@@ -132,11 +155,14 @@
       input.type = step === 'password' ? 'password' : 'text';
       input.maxLength = step === 'password' ? 128 : 40;
       input.autocomplete = step === 'password' ? 'current-password' : 'off';
+      input.enterKeyHint = step === 'password' ? 'go' : 'next';
       input.value = '';
       echo();
       promptLine.hidden = false;
-      input.disabled = false;
-      input.focus();
+      // the field never loses focus between steps, so a phone keyboard stays open
+      input.readOnly = false;
+      busy = false;
+      input.focus({ preventScroll: true });
     }
 
     function addLine(text) {
@@ -185,9 +211,10 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const value = input.value;
-      if (!value.trim()) return;
+      if (busy || !value.trim()) return;
 
-      input.disabled = true;
+      busy = true;
+      input.readOnly = true; // readOnly keeps focus; disabled would close the keyboard
       promptLine.hidden = true;
 
       if (step === 'name') {
@@ -201,6 +228,8 @@
       const result = await checkPassword(value);
 
       if (result === 'ok') {
+        hint.hidden = true;
+        input.blur();
         typeOut(`Thank you, ${name}. Here is the latest on the LIDS campaign.`, openOneSheet);
       } else if (result === 'wrong') {
         typeOut('Wrong password. Try again.', () => ask('password'));
