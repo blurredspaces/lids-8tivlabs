@@ -3,10 +3,18 @@
 ## Overview
 Two static pages, no build step.
 
-- **`index.html` (splash).** A terminal-style prompt asks for the visitor's name. It types back a thank-you and then shows a link to the one-sheet. The name is only displayed on screen. It is never stored or sent anywhere.
+- **`index.html` (splash).** A terminal-style prompt asks for the visitor's name, then a password. When the password is correct, it types back a thank-you and shows a link to the one-sheet. The name is only displayed on screen. It is never stored or sent anywhere.
 - **`onesheet.html` (one-sheet).** A single-page summary of the Fits From The Streets x LIDS campaign, *The Handoff*: concept, mechanic, per-episode Instagram stats, timeline and the KPI. Content comes from `Lids-Fits_8tivLabs-Updated.pdf` (updated 10.13.26).
 
 The source images live in `graphics/`, which is git-ignored. The web-sized copies the pages use are in `img/`.
+
+## Password protection
+- The password is the `ADMIN_PASSWORD` environment variable in Netlify. It is checked only on the server and never appears in the page source.
+- `netlify/edge-functions/login.ts` handles `POST /api/login` with the body `{ "password": "..." }`. A correct password gets `200` plus an HttpOnly, Secure, SameSite=Lax cookie (`lids_auth`, 7 days). A wrong one gets `401`. If the variable isn't set, it returns `500`.
+- `netlify/edge-functions/guard.ts` protects `/onesheet`, `/onesheet.html`, `/img/ep*` and `/HANDOFF.md`. Without a valid cookie, the page redirects to `/` and the files return `401`. Protected responses are sent with `Cache-Control: private, no-store`.
+- The cookie stores a SHA-256 hash of the password, not the password itself. Changing `ADMIN_PASSWORD` signs everyone out.
+- There is no lockout after repeated wrong guesses, so use a long password.
+- Edge functions don't run on a plain local server, so `/api/login` fails there and the splash shows "Can't check the password right now." Use `netlify dev` to test the real flow locally.
 
 ## Layout
 - Max content width is `--page-max` (1160px), centered. Side gutters are `--space-3` (16px) on mobile and `--space-5` (40px) from 760px up.
@@ -49,7 +57,8 @@ Edit the data block near the bottom of `onesheet.html`:
 |---|---|---|
 | Prompt cursor | Focused | Blinks, 1.1s `steps(1)` |
 | Prompt cursor | Not focused | Static at 30% opacity, which tells the visitor to click to type. Clicking anywhere in the form focuses the input. |
-| Reply | Submitted | Types 1 character every 38ms after a 350ms delay, then the one-sheet link fades in (opacity, 300ms ease-out) and takes focus, so a second Enter opens it |
+| Password | Typing | Each character shows as `*`. A wrong password prints "Wrong password. Try again." and asks again. A network or server error prints "Can't check the password right now. Try again in a moment." |
+| Reply | Correct password | Types 1 character every 38ms after a 350ms delay, then the one-sheet link fades in (opacity, 300ms ease-out) and takes focus, so a second Enter opens it |
 | Links | Hover / focus-visible / active | Colors invert to black background with white text / 2px ink outline with 3px offset / 60% opacity |
 
 ## Responsive behavior
@@ -77,12 +86,11 @@ Edit the data block near the bottom of `onesheet.html`:
 `prefers-reduced-motion: reduce` stops the blink, shows the reply instantly and removes the fade.
 
 ## Accessibility
-- Splash focus order: name input (autofocused), then the one-sheet link, which receives focus once it appears.
-- The input has a `<label>` that contains the visible prompt. The reply is `aria-live="polite"`. Cursors are `aria-hidden`.
+- Splash focus order: name input (autofocused), then the same field as a password input (`type=password`, `autocomplete=current-password`), then the one-sheet link, which receives focus once it appears.
+- The input has a `<label>` that contains the visible prompt. The transcript (`#log`) is `aria-live="polite"`. Cursors are `aria-hidden`.
 - On the one-sheet, the chain has `aria-label="How the Handoff works"`, each episode is an `<article>` with `aria-label="Episode N"`, and the phone frame image has `alt=""` (decorative) while each screen image has descriptive alt text.
 - Contrast: black on white is 21:1, and #555 on white is 7.5:1.
 
 ## Open items
-- **The one-sheet is public.** The PDF is marked confidential, but anyone with the URL can see `onesheet.html`. The name prompt is not a password. The page has `noindex`, but that only keeps it out of search results. Use Netlify password protection if it needs to stay private.
 - **Two campaign windows in the PDF.** Page 5 says Sep 4–Oct 30, and page 6 says Sep 14–Nov 8. The one-sheet says "eight-week run" until this is settled.
 - **Episode 3 and 4 stats** are not in the PDF yet.

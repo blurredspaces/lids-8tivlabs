@@ -48,7 +48,7 @@
       margin-top: 1.5em;
       font-size: clamp(1.25rem, 3.5vw, 1.75rem);
       line-height: 1.4;
-      min-height: 4.2em;
+      min-height: 5.6em;
       cursor: text;
     }
 
@@ -105,26 +105,73 @@
     <h1>LIDS</h1>
 
     <form class="terminal" id="term" autocomplete="off">
-      <label class="prompt-line" for="name">
-        <p>Your name? <span class="typed" id="typed"></span><span class="cursor" aria-hidden="true"></span></p>
+      <div id="log" aria-live="polite"></div>
+      <label class="prompt-line" id="prompt-line" for="field">
+        <p><span id="prompt">Your name?</span> <span class="typed" id="typed"></span><span class="cursor" aria-hidden="true"></span></p>
       </label>
-      <input id="name" name="name" type="text" maxlength="40" spellcheck="false" autocapitalize="words" autofocus>
-      <p id="reply" aria-live="polite"></p>
+      <input id="field" name="name" type="text" maxlength="40" spellcheck="false" autocapitalize="words" autocomplete="off" autofocus>
       <a class="next" id="next" href="onesheet.html" hidden>View the campaign one-sheet</a>
     </form>
   </main>
 
   <script>
     const form = document.getElementById('term');
-    const input = document.getElementById('name');
+    const input = document.getElementById('field');
+    const log = document.getElementById('log');
+    const promptLine = document.getElementById('prompt-line');
+    const promptText = document.getElementById('prompt');
     const typed = document.getElementById('typed');
-    const reply = document.getElementById('reply');
     const next = document.getElementById('next');
-    const promptCursor = form.querySelector('.prompt-line .cursor');
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    form.addEventListener('click', (e) => { if (e.target !== next) input.focus(); });
-    input.addEventListener('input', () => { typed.textContent = input.value; });
+    const PROMPTS = { name: 'Your name?', password: 'Password?' };
+    let step = 'name';
+    let name = '';
+
+    const mask = (value) => '*'.repeat(value.length);
+    const echo = () => { typed.textContent = step === 'password' ? mask(input.value) : input.value; };
+
+    form.addEventListener('click', (e) => { if (e.target !== next && !input.disabled) input.focus(); });
+    input.addEventListener('input', echo);
+
+    function ask(nextStep) {
+      step = nextStep;
+      promptText.textContent = PROMPTS[step];
+      input.type = step === 'password' ? 'password' : 'text';
+      input.maxLength = step === 'password' ? 128 : 40;
+      input.autocomplete = step === 'password' ? 'current-password' : 'off';
+      input.value = '';
+      echo();
+      promptLine.hidden = false;
+      input.disabled = false;
+      input.focus();
+    }
+
+    function addLine(text) {
+      const p = document.createElement('p');
+      p.textContent = text;
+      log.append(p);
+      return p;
+    }
+
+    // type a line out one character at a time, like an old terminal
+    function typeOut(message, done) {
+      if (reduceMotion) { addLine(message); return done(); }
+      const line = addLine('');
+      const text = document.createTextNode('');
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor';
+      cursor.setAttribute('aria-hidden', 'true');
+      line.append(text, cursor);
+      let i = 0;
+      const tick = () => {
+        text.data = message.slice(0, ++i);
+        if (i < message.length) return setTimeout(tick, 38);
+        cursor.remove();
+        done();
+      };
+      setTimeout(tick, 350);
+    }
 
     function showNext() {
       next.hidden = false;
@@ -132,36 +179,45 @@
       next.focus({ preventScroll: true }); // Enter now opens the one-sheet
     }
 
-    form.addEventListener('submit', (e) => {
+    async function checkPassword(password) {
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password }),
+        });
+        if (res.ok) return 'ok';
+        return res.status === 401 ? 'wrong' : 'error';
+      } catch {
+        return 'error';
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = input.value.trim();
-      if (!name) return;
+      const value = input.value;
+      if (!value.trim()) return;
 
       input.disabled = true;
-      promptCursor.remove();
+      promptLine.hidden = true;
 
-      const message = `Thank you, ${name}. Here is the latest on the LIDS campaign.`;
-
-      if (reduceMotion) {
-        reply.textContent = message;
-        showNext();
-        return;
+      if (step === 'name') {
+        name = value.trim();
+        addLine(`${PROMPTS.name} ${name}`);
+        return ask('password');
       }
 
-      // type the reply out one character at a time, like an old terminal
-      const text = document.createTextNode('');
-      const cursor = document.createElement('span');
-      cursor.className = 'cursor';
-      cursor.setAttribute('aria-hidden', 'true');
-      reply.append(text, cursor);
-      let i = 0;
-      const tick = () => {
-        text.data = message.slice(0, ++i);
-        if (i < message.length) return setTimeout(tick, 38);
-        cursor.remove();
-        showNext();
-      };
-      setTimeout(tick, 350);
+      addLine(`${PROMPTS.password} ${mask(value)}`);
+      input.value = '';
+      const result = await checkPassword(value);
+
+      if (result === 'ok') {
+        typeOut(`Thank you, ${name}. Here is the latest on the LIDS campaign.`, showNext);
+      } else if (result === 'wrong') {
+        typeOut('Wrong password. Try again.', () => ask('password'));
+      } else {
+        typeOut("Can't check the password right now. Try again in a moment.", () => ask('password'));
+      }
     });
   </script>
 </body>
