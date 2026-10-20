@@ -63,6 +63,7 @@ Edit the data block near the bottom of `onesheet.html`:
 - `insights: { viewers, reposts, shares, saves, avgWatchSec, follows }` comes from Instagram Insights. Leave out any you don't have, or set the whole thing to `null`. When `INSIGHTS_UPDATED` differs from `STATS_UPDATED`, a note under the grid gives the Insights date.
 - `youtube: { views }` is the @lids YouTube Shorts count. Use `null` until the Short is live.
 - `title` is the YouTube Shorts title without the "The Handoff Ep. N" part.
+- `video: { url, label }` adds a red button that opens the video in a new tab. Episode 4 uses it for the final cut on Vimeo.
 - `instagram` is the post URL. It shows a "View on Instagram" pill that opens in a new tab.
 - An episode with `stats` gets a full slide and counts toward the totals. One with `stats: null` shows as an upcoming card.
 - `image: null` shows "Still coming" in the phone. New stills should be phone-shaped (about 9:19.5), around 640px wide, saved as JPG in `img/`.
