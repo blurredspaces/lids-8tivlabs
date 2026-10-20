@@ -61,6 +61,7 @@ Edit the data block near the bottom of `onesheet.html`:
 - Set `STATS_UPDATED` to the date the Instagram numbers were pulled, and `YOUTUBE_UPDATED` to the date the YouTube Shorts numbers were pulled. Every "as of" label reads from these two.
 - Each episode's `title` is its YouTube Shorts title without the "The Handoff Ep. N" part.
 - Set `youtube: { views }` from the @lids YouTube Shorts count. Use `null` until the Short is live.
+- Set `instagram` to the post URL to show a "View on Instagram" pill in the episode header. It opens in a new tab.
 - For each episode, fill `stats` with `{ views, viewers, likes, comments, reposts, shares, saves, avgWatchSec, follows }`, all as plain numbers. Commas and the " sec" suffix are added automatically. Filling in `stats` moves the episode from an upcoming card to a full slide and adds it to the totals.
 - `image: null` shows "Still coming" on a black screen. `stats: null` shows "Stats arrive with the next update." once the episode is out, or "Stats start after launch on …" before then.
 - New stills should be phone-shaped (about 9:19.5), around 640px wide, saved as JPG in `img/`.

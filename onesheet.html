@@ -270,6 +270,24 @@
     }
     .chip.is-live { background: var(--red-soft); color: #ff8a97; }
     .chip.is-live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+    .ep-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--text-hi);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 250ms var(--ease-spring), opacity 150ms ease;
+    }
+    .ep-link svg { width: 14px; height: 14px; }
+    .ep-link:hover { transform: translateY(-1px); border-color: var(--red); }
+    .ep-link:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+    .ep-link:active { transform: translateY(1px); opacity: 0.7; }
     .ep-title { flex-basis: 100%; color: var(--text-hi); font-size: var(--text-md); font-weight: 500; margin-top: calc(var(--space-1) * -1); }
 
     /* YouTube Shorts on the @lids channel */
@@ -449,7 +467,10 @@
       .timeline li { grid-template-columns: 12px 5.5em 1fr; gap: var(--space-2); }
     }
 
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
     @media (prefers-reduced-motion: reduce) {
+      .ep-link { transition: none; }
       .reveal { opacity: 1; transform: none; transition: none; }
       .link { transition: none; }
     }
@@ -549,6 +570,7 @@
         number: 1,
         title: 'Rule of Thirds',
         date: '2026-09-29',
+        instagram: 'https://www.instagram.com/p/Dd4xDmvuIDm/',
         image: 'img/ep1.jpg',
         alt: 'Episode 1 Instagram post: subject in a black White Sox cap',
         stats: { views: 28209, viewers: 19393, likes: 918, comments: 145, reposts: 67, shares: 67, saves: 41, avgWatchSec: 8, follows: 0 },
@@ -615,6 +637,9 @@
         <h3>Episode ${ep.number}</h3>
         <span>${short(ep.date)}</span>
         <span class="chip${isOut(ep.date) ? ' is-live' : ''}">${isOut(ep.date) ? 'Out now' : 'Coming up'}</span>
+        ${ep.instagram ? `<a class="ep-link" href="${esc(ep.instagram)}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          View on Instagram<span class="visually-hidden"> (opens in a new tab)</span></a>` : ''}
         ${ep.title ? `<p class="ep-title">${esc(ep.title)}</p>` : ''}
       </div>`;
 
