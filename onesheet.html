@@ -455,6 +455,41 @@
     .kpi p { font-size: var(--text-sm); }
     .kpi p + p { margin-top: var(--space-2); color: var(--text-2); }
 
+    /* ---------- long-form YouTube ---------- */
+    .longform { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-5); }
+    .lf {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-panel);
+      overflow: hidden;
+    }
+    .lf::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 3px;
+      background: var(--red);
+    }
+    .lf-top { display: flex; align-items: center; gap: var(--space-3); }
+    .lf-top .yt-icon { width: 34px; height: 24px; }
+    .lf h3 {
+      font-family: var(--font-display);
+      font-stretch: 75%;
+      font-weight: 800;
+      font-size: clamp(1.75rem, 3.4vw, 2.25rem);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--text-hi);
+    }
+    .lf-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font-size: var(--text-sm); color: var(--text-2); }
+    .lf-meta b { color: var(--text-hi); font-weight: 600; }
+
     footer {
       margin-top: var(--space-7);
       padding-top: var(--space-4);
@@ -489,6 +524,8 @@
     }
 
     @media (max-width: 679px) {
+      .longform { grid-template-columns: 1fr; gap: var(--space-4); }
+      .lf { padding: var(--space-4) var(--space-3); }
       .masthead .by > span { display: none; }
       .chain { grid-template-columns: 1fr; gap: var(--space-2); }
       .chain li { display: flex; align-items: baseline; gap: var(--space-3); padding: var(--space-3); }
@@ -587,6 +624,31 @@
       </div>
     </section>
 
+    <section aria-labelledby="lf-title">
+      <div class="section-head">
+        <h2 id="lf-title">Long-form YouTube</h2>
+        <p>Two long-form pieces are in development. Delivery dates are to be confirmed.</p>
+      </div>
+      <div class="longform">
+        <article class="lf reveal" data-reveal>
+          <div class="lf-top">
+            <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
+            <span class="chip">In development</span>
+          </div>
+          <h3>Lids Hand Off</h3>
+          <p class="lf-meta"><span>Long-form YouTube</span><span>Delivery <b>TBD</b></span></p>
+        </article>
+        <article class="lf reveal" data-reveal>
+          <div class="lf-top">
+            <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
+            <span class="chip">In development</span>
+          </div>
+          <h3>Fits From The Streets x LIDS: NYC Pull Up</h3>
+          <p class="lf-meta"><span>Long-form YouTube</span><span>Delivery <b>TBD</b></span></p>
+        </article>
+      </div>
+    </section>
+
     <footer>
       <span>Prepared by 8tivLabs. Confidential.</span>
       <a class="link" href="index.html">Start over</a>
@@ -656,8 +718,8 @@
       { date: '2026-10-06', what: 'Episode 2', phase: 'Phase 1: Fashion Week / NFL kickoff' },
       { date: '2026-10-13', what: 'Episode 3', phase: 'Phase 2: Sports Equinox (NBA, NFL, MLB)' },
       { date: '2026-10-20', what: 'Episode 4', phase: 'Phase 2: Sports Equinox (NBA, NFL, MLB)' },
-      { label: 'Late Oct', what: 'Handoff compilation long-form (target)' },
-      { label: 'Early Nov', what: 'Standalone long-form (target), closes the campaign' },
+      { label: 'Date TBD', what: 'Long-form YouTube: Lids Hand Off (in development)' },
+      { label: 'Date TBD', what: 'Long-form YouTube: Fits From The Streets x LIDS: NYC Pull Up (in development)' },
       { label: 'Date TBD', what: 'In-store activation, NYC' },
     ];
 

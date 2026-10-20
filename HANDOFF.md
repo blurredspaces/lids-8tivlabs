@@ -19,7 +19,7 @@ The source images live in `graphics/`, which is git-ignored. The web-sized copie
 ## Layout
 - The splash is black on white, centered on both axes with CSS grid `place-items: center`.
 - The one-sheet's max content width is `--page-max` (1180px), centered. Side gutters are `--space-3` (16px) on mobile and `--space-5` (40px) from 760px up.
-- One-sheet order: masthead (Fits x Lids lockup, "Prepared by 8tivLabs"), hero (title + intro), campaign totals band, five-step chain, episode stat slides, upcoming-episode cards, plan row (Timeline + How we measure it), footer.
+- One-sheet order: masthead (Fits x Lids lockup, "Prepared by 8tivLabs"), hero (title + intro), campaign totals band, five-step chain, episode stat slides, upcoming-episode cards, plan row (Timeline + How we measure it), Long-form YouTube, footer.
 - Depth has three layers: `--bg` for the page, `--surface` for panels and `--surface-2` for chips and stat cells.
 
 ## Design tokens
@@ -54,6 +54,7 @@ Splash (`index.html`): `--paper` #ffffff, `--ink` #000000. Type is the Mac OS X 
 | Upcoming card | For episodes without stats: a small phone, a status line and, when available, the YouTube strip. |
 | Phone mockup | The frame is 1506×3102. Its transparent screen spans x 44–1466 and y 32–3069, inset as `left 2.92% / right 2.66% / top 1.03% / bottom 1.06%`, with `border-radius: 15% / 7.2%`. Screen images use `object-fit: cover` anchored to the bottom. |
 | Status chip | Computed from each episode's `date` against the viewer's local date: "Out now" (red) on or after the date, otherwise "Coming up". |
+| Long-form YouTube | The last section before the footer. Two cards ("Lids Hand Off" and "Fits From The Streets x LIDS: NYC Pull Up"), each with a red top edge, YouTube icon, "In development" chip and "Delivery TBD". It's static HTML, so edit the cards directly when dates are set, and update the matching `TIMELINE` rows. |
 | Timeline | Built from the `TIMELINE` array. The latest dated item that has already happened is red, earlier ones are filled gray, and later ones are hollow. |
 
 ## Updating stats
