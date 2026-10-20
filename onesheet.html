@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Handoff | Fits From The Streets x LIDS</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=VT323&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* color */
+      --paper: #ffffff;
+      --ink: #000000;
+      --ink-2: #555555;       /* secondary text */
+      --tint: #f2f2f2;        /* empty image wells */
+      --live: #d7262b;        /* Fits red, from the logo; only marks "out now" */
+
+      /* type */
+      --font-display: "VT323", "Courier New", monospace;
+      --font-body: "IBM Plex Sans", system-ui, sans-serif;
+      --text-sm: 0.875rem;    /* 14 */
+      --text-md: 1rem;        /* 16 */
+      --text-lg: 1.25rem;     /* 20 */
+      --display-sm: 1.75rem;  /* 28 */
+      --display-md: 2.75rem;  /* 44 */
+      --display-xl: clamp(4.5rem, 15vw, 10rem);
+
+      /* space */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 16px;
+      --space-4: 24px;
+      --space-5: 40px;
+      --space-6: 64px;
+
+      --rule: 2px solid var(--ink);
+      --page-max: 1160px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: var(--text-md);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: var(--space-4) var(--space-3) var(--space-6);
+    }
+
+    a { color: inherit; }
+    a:hover { background: var(--ink); color: var(--paper); text-decoration: none; }
+    a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+    a:active { opacity: 0.6; }
+
+    /* ---------- masthead ---------- */
+    .masthead {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding-bottom: var(--space-3);
+      border-bottom: var(--rule);
+    }
+    .masthead img { width: 56px; height: 56px; flex: none; }
+    .masthead .who { font-weight: 600; line-height: 1.3; }
+    .masthead .who span { display: block; font-weight: 400; color: var(--ink-2); font-size: var(--text-sm); }
+    .masthead .updated { margin-left: auto; font-size: var(--text-sm); color: var(--ink-2); text-align: right; }
+
+    /* ---------- title + concept ---------- */
+    .hero { padding: var(--space-5) 0 var(--space-4); }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: var(--display-xl);
+      line-height: 0.8;
+      letter-spacing: -0.01em;
+    }
+    .intro {
+      display: grid;
+      gap: var(--space-4);
+      margin-top: var(--space-4);
+    }
+    .intro p { max-width: 60ch; }
+    .intro .lead { font-size: var(--text-lg); line-height: 1.5; }
+    .intro h2 { font-size: var(--text-md); font-weight: 600; margin-bottom: var(--space-1); }
+
+    /* ---------- the chain ---------- */
+    .chain {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border-top: var(--rule);
+      border-bottom: var(--rule);
+      counter-reset: step;
+    }
+    .chain li {
+      counter-increment: step;
+      padding: var(--space-3) var(--space-3) var(--space-3) 0;
+      font-weight: 500;
+      line-height: 1.3;
+      position: relative;
+    }
+    .chain li::before {
+      content: counter(step);
+      display: block;
+      font-family: var(--font-display);
+      font-size: var(--display-sm);
+      line-height: 1;
+      margin-bottom: var(--space-2);
+    }
+    .chain li + li { padding-left: var(--space-3); border-left: 1px solid var(--ink); }
+
+    /* ---------- sections ---------- */
+    section { margin-top: var(--space-6); }
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-2) var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+    .section-head h2 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: var(--display-md);
+      line-height: 1;
+    }
+    .section-head p { color: var(--ink-2); font-size: var(--text-sm); }
+
+    /* ---------- episode cards ---------- */
+    .episodes {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+    }
+    .ep { display: flex; flex-direction: column; }
+    /*
+      Phone mockup. The frame PNG (1506x3102) has a transparent screen at
+      x 44–1466, y 32–3069; the insets below are those edges as percentages.
+    */
+    .phone {
+      position: relative;
+      aspect-ratio: 1506 / 3102;
+      width: 100%;
+      max-width: 260px;
+      margin: 0 auto var(--space-3);
+    }
+    .phone-screen {
+      position: absolute;
+      left: 2.92%;
+      right: 2.66%;
+      top: 1.03%;
+      bottom: 1.06%;
+      border-radius: 15% / 7.2%;
+      overflow: hidden;
+      background: var(--ink);
+    }
+    .phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: center bottom; display: block; }
+    .phone-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .ep-empty {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-display);
+      font-size: var(--display-sm);
+      color: #9a9a9a;
+      text-align: center;
+      padding: var(--space-3);
+    }
+
+    .ep-when {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-2);
+      padding: var(--space-2) 0;
+      border-top: var(--rule);
+      border-bottom: 1px solid var(--ink);
+      font-size: var(--text-sm);
+    }
+    .ep-tag {
+      font-family: var(--font-display);
+      font-size: var(--display-sm);
+      line-height: 1;
+      margin-right: auto;
+    }
+    .ep-when .when { color: var(--ink-2); }
+    .status { font-weight: 600; white-space: nowrap; }
+    .status.is-live { color: var(--live); }
+    .status.is-live::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 6px;
+      border-radius: 50%;
+      background: var(--live);
+      vertical-align: 1px;
+    }
+
+    .views { padding-top: var(--space-3); }
+    .views strong {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: var(--display-md);
+      line-height: 0.9;
+      font-variant-numeric: tabular-nums;
+    }
+    .views span { font-size: var(--text-sm); color: var(--ink-2); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2) var(--space-3);
+      margin-top: var(--space-3);
+      font-size: var(--text-sm);
+    }
+    .stats div { display: flex; justify-content: space-between; gap: var(--space-2); border-bottom: 1px solid #d9d9d9; padding-bottom: 2px; }
+    .stats dt { color: var(--ink-2); }
+    .stats dd { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+    .ep-note { margin-top: var(--space-3); font-size: var(--text-sm); color: var(--ink-2); }
+
+    /* ---------- plan: timeline / touchpoints / measure ---------- */
+    .plan {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: var(--space-6);
+      border-top: var(--rule);
+      padding-top: var(--space-4);
+    }
+    .plan h3 { font-size: var(--text-md); font-weight: 600; margin-bottom: var(--space-3); }
+    .plan .sub { font-size: var(--text-sm); color: var(--ink-2); margin: calc(var(--space-3) * -1 + var(--space-1)) 0 var(--space-3); }
+
+    .timeline { list-style: none; font-size: var(--text-sm); }
+    .timeline li {
+      display: grid;
+      grid-template-columns: 7.5em 1fr;
+      gap: var(--space-3);
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid #d9d9d9;
+    }
+    .timeline time, .timeline .date { color: var(--ink-2); }
+    .timeline .phase { display: block; color: var(--ink-2); }
+
+
+    .kpi strong {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: var(--display-md);
+      line-height: 0.9;
+      margin-bottom: var(--space-2);
+    }
+    .kpi p { font-size: var(--text-sm); max-width: 32ch; }
+    .kpi p + p { margin-top: var(--space-2); color: var(--ink-2); }
+
+    footer {
+      margin-top: var(--space-6);
+      padding-top: var(--space-3);
+      border-top: var(--rule);
+      display: flex;
+      justify-content: space-between;
+      gap: var(--space-3);
+      font-size: var(--text-sm);
+      color: var(--ink-2);
+    }
+
+    /* ---------- responsive ---------- */
+    @media (min-width: 760px) {
+      .page { padding: var(--space-5) var(--space-5) var(--space-6); }
+      .intro { grid-template-columns: 1.4fr 1fr; gap: var(--space-5); }
+    }
+
+    @media (max-width: 1023px) {
+      .episodes { grid-template-columns: repeat(2, 1fr); }
+      .plan { gap: var(--space-5); }
+    }
+
+    @media (max-width: 759px) {
+      .chain { grid-template-columns: 1fr; }
+      .chain li, .chain li + li {
+        display: flex; align-items: baseline; gap: var(--space-3);
+        padding: var(--space-2) 0; border-left: 0;
+      }
+      .chain li + li { border-top: 1px solid var(--ink); }
+      .chain li::before { margin: 0; min-width: 1ch; }
+      .plan { grid-template-columns: 1fr; gap: var(--space-5); }
+      .masthead .updated { display: none; }
+    }
+
+    @media (max-width: 479px) {
+      .episodes { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      @page { margin: 12mm; }
+      .page { padding: 0; max-width: none; }
+      section { margin-top: var(--space-5); break-inside: avoid; }
+      .episodes { grid-template-columns: repeat(4, 1fr); }
+      .plan { grid-template-columns: 1.6fr 1fr; }
+      footer a { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="masthead">
+      <img src="img/fits-logo.png" alt="Fits From The Streets logo">
+      <p class="who">Fits From The Streets x LIDS<span>Brand campaign by 8tivLabs</span></p>
+      <p class="updated" id="updated"></p>
+    </header>
+
+    <div class="hero">
+      <h1>The Handoff</h1>
+      <div class="intro">
+        <p class="lead">One cap. One continuous chain. Real people carrying real culture forward, with the cap moving from one story to the next across an eight-week run.</p>
+        <div>
+          <h2>Seeding, not casting</h2>
+          <p>Subjects are seeded through the whole campaign, not batched into one shoot day. Credibility comes from real proximity to street and sports culture, not follower count. It's the same approach that worked on the Nike campaign.</p>
+        </div>
+      </div>
+    </div>
+
+    <ol class="chain" aria-label="How the Handoff works">
+      <li>Seeded</li>
+      <li>Carries it forward</li>
+      <li>Holding the cap</li>
+      <li>Passes it on</li>
+      <li>Next in line</li>
+    </ol>
+
+    <section aria-labelledby="eps-title">
+      <div class="section-head">
+        <h2 id="eps-title">Episodes</h2>
+        <p id="stats-note"></p>
+      </div>
+      <div class="episodes" id="episodes"></div>
+    </section>
+
+    <section class="plan" aria-label="Campaign plan">
+      <div>
+        <h3>Timeline</h3>
+        <ol class="timeline">
+          <li><time datetime="2026-09-29">Tue Sep 29</time><span>Episode 1<span class="phase">Phase 1: Fashion Week / NFL kickoff</span></span></li>
+          <li><time datetime="2026-10-06">Tue Oct 6</time><span>Episode 2<span class="phase">Phase 1: Fashion Week / NFL kickoff</span></span></li>
+          <li><time datetime="2026-10-13">Tue Oct 13</time><span>Episode 3<span class="phase">Phase 2: Sports Equinox (NBA, NFL, MLB)</span></span></li>
+          <li><time datetime="2026-10-20">Tue Oct 20</time><span>Episode 4<span class="phase">Phase 2: Sports Equinox (NBA, NFL, MLB)</span></span></li>
+          <li><span class="date">Late Oct</span><span>Handoff compilation long-form (target)</span></li>
+          <li><span class="date">Early Nov</span><span>Standalone long-form (target), closes the campaign</span></li>
+          <li><span class="date">Date TBD</span><span>In-store activation, NYC</span></li>
+        </ol>
+      </div>
+
+      <div class="kpi">
+        <h3>How we measure it</h3>
+        <strong>Impressions</strong>
+        <p>The primary KPI for every drop.</p>
+        <p>Click-through is treated as upside, not a committed metric.</p>
+      </div>
+    </section>
+
+    <footer>
+      <span>Prepared by 8tivLabs. Confidential.</span>
+      <a href="index.html">Start over</a>
+    </footer>
+  </div>
+
+  <script>
+    /*
+      Update stats here. Leave `stats` as null until an episode has numbers,
+      and `image` as null until there is a still. Dates are YYYY-MM-DD.
+    */
+    const STATS_UPDATED = '2026-10-13';
+    const EPISODES = [
+      {
+        number: 1,
+        date: '2026-09-29',
+        image: 'img/ep1.jpg',
+        alt: 'Episode 1 Instagram post: subject in a black White Sox cap',
+        stats: { views: 28209, viewers: 19393, likes: 918, comments: 145, reposts: 67, shares: 67, saves: 41, avgWatch: '8 sec', follows: 0 },
+      },
+      {
+        number: 2,
+        date: '2026-10-06',
+        image: 'img/ep2.jpg',
+        alt: 'Episode 2 Instagram post: subject in a burgundy leather coat, hands on her cap',
+        stats: { views: 18915, viewers: 11961, likes: 644, comments: 156, reposts: 52, shares: 38, saves: 31, avgWatch: '6 sec', follows: 0 },
+      },
+      {
+        number: 3,
+        date: '2026-10-13',
+        image: 'img/ep3.jpg',
+        alt: 'Episode 3 subject in a blue 76ers cap',
+        stats: null,
+      },
+      {
+        number: 4,
+        date: '2026-10-20',
+        image: null,
+        alt: '',
+        stats: null,
+      },
+    ];
+
+    const fmt = new Intl.NumberFormat('en-US');
+    const toDate = (iso) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
+    const short = (iso) => toDate(iso).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).replace(',', '');
+    const long = (iso) => toDate(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+
+    document.getElementById('updated').textContent = `Stats updated ${long(STATS_UPDATED)}`;
+    document.getElementById('stats-note').textContent = `Instagram, so far. Last updated ${long(STATS_UPDATED)}.`;
+
+    const LABELS = [
+      ['likes', 'Likes'], ['comments', 'Comments'], ['reposts', 'Reposts'], ['shares', 'Shares'],
+      ['saves', 'Saves'], ['avgWatch', 'Avg. watch'], ['follows', 'Follows'],
+    ];
+
+    document.getElementById('episodes').innerHTML = EPISODES.map((ep) => {
+      const out = toDate(ep.date) <= today;
+      const media = ep.image
+        ? `<img src="${esc(ep.image)}" alt="${esc(ep.alt)}" loading="lazy">`
+        : `<div class="ep-empty">Still coming</div>`;
+
+      const body = ep.stats
+        ? `<p class="views"><strong>${fmt.format(ep.stats.views)}</strong><span>views from ${fmt.format(ep.stats.viewers)} viewers</span></p>
+           <dl class="stats">${LABELS.map(([k, label]) =>
+             `<div><dt>${label}</dt><dd>${typeof ep.stats[k] === 'number' ? fmt.format(ep.stats[k]) : esc(ep.stats[k] ?? '–')}</dd></div>`
+           ).join('')}</dl>`
+        : `<p class="ep-note">${out ? 'Stats arrive with the next update.' : `Stats start after launch on ${short(ep.date)}.`}</p>`;
+
+      return `<article class="ep" aria-label="Episode ${ep.number}">
+        <div class="phone">
+          <div class="phone-screen">${media}</div>
+          <img class="phone-frame" src="img/iphone-frame.png" alt="">
+        </div>
+        <p class="ep-when"><span class="ep-tag">EP ${ep.number}</span><span class="when">${short(ep.date)}</span><span class="status${out ? ' is-live' : ''}">${out ? 'Out now' : 'Coming up'}</span></p>
+        ${body}
+      </article>`;
+    }).join('');
+  </script>
+</body>
+</html>
