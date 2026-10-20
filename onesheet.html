@@ -169,6 +169,19 @@
     .totals .label { font-size: var(--text-sm); color: var(--text-2); margin-top: var(--space-2); }
     .totals > div:first-child .num { color: var(--red); }
     .totals-note { font-size: var(--text-xs); color: var(--text-2); margin-top: var(--space-3); }
+    .organic {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--red-soft);
+      color: #ff8a97;
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+    .organic::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
 
     /* ---------- sections ---------- */
     section { margin-top: var(--space-7); }
@@ -329,6 +342,7 @@
     .stat-grid dd { order: -1; }
     .stat-grid .num { font-size: var(--num-sm); }
     .stat-grid dt { font-size: var(--text-xs); color: var(--text-2); margin-top: var(--space-1); }
+    .grid-note { font-size: var(--text-xs); color: var(--text-2); margin-top: var(--space-2); }
 
     /* compact cards for episodes still waiting on stats */
     .upcoming {
@@ -511,6 +525,7 @@
     </div>
 
     <div class="reveal" data-reveal>
+      <p class="organic">All engagement is organic</p>
       <div class="totals" id="totals"></div>
       <p class="totals-note" id="totals-note"></p>
     </div>
@@ -560,11 +575,15 @@
 
   <script>
     /*
-      Update stats here. Leave `stats` as null until an episode has numbers,
-      and `image` as null until there is a still. Dates are YYYY-MM-DD.
+      Update stats here. Dates are YYYY-MM-DD.
+      - `stats` holds the latest Instagram views, likes and comments. Views can be
+        exact (28209) or rounded the way Instagram shows them ('21.2K').
+      - `insights` holds the detailed Instagram Insights numbers. Leave out any you don't have.
+      - Leave `stats` as null until an episode has numbers, and `image` as null until there is a still.
     */
-    const STATS_UPDATED = '2026-10-13';    // Instagram numbers
-    const YOUTUBE_UPDATED = '2026-10-20';  // YouTube Shorts numbers on the @lids channel
+    const STATS_UPDATED = '2026-10-20';     // Instagram views, likes, comments
+    const INSIGHTS_UPDATED = '2026-10-13';  // Instagram Insights detail
+    const YOUTUBE_UPDATED = '2026-10-20';   // YouTube Shorts on the @lids channel
     const EPISODES = [
       {
         number: 1,
@@ -573,7 +592,8 @@
         instagram: 'https://www.instagram.com/p/Dd4xDmvuIDm/',
         image: 'img/ep1.jpg',
         alt: 'Episode 1 Instagram post: subject in a black White Sox cap',
-        stats: { views: 28209, viewers: 19393, likes: 918, comments: 145, reposts: 67, shares: 67, saves: 41, avgWatchSec: 8, follows: 0 },
+        stats: { views: '29K', likes: 931, comments: 145 },
+        insights: { viewers: 19393, reposts: 67, shares: 67, saves: 41, avgWatchSec: 8, follows: 0 },
         youtube: { views: 350 },
       },
       {
@@ -583,7 +603,8 @@
         instagram: 'https://www.instagram.com/p/DeKzZbSB7IN/',
         image: 'img/ep2.jpg',
         alt: 'Episode 2 Instagram post: subject in a burgundy leather coat, hands on her cap',
-        stats: { views: 18915, viewers: 11961, likes: 644, comments: 156, reposts: 52, shares: 38, saves: 31, avgWatchSec: 6, follows: 0 },
+        stats: { views: '21.2K', likes: 681, comments: 181 },
+        insights: { viewers: 11961, reposts: 52, shares: 38, saves: 31, avgWatchSec: 6, follows: 0 },
         youtube: { views: 550 },
       },
       {
@@ -593,10 +614,11 @@
         instagram: 'https://www.instagram.com/p/Dec17ezPuL8/',
         image: 'img/ep3.jpg',
         alt: 'Episode 3 subject in a blue 76ers cap',
-        stats: null,
+        stats: { views: '19K', likes: 889, comments: 132 },
+        insights: null,
         youtube: { views: 334 },
       },
-      { number: 4, title: null, date: '2026-10-20', image: null, alt: '', stats: null, youtube: null },
+      { number: 4, title: null, date: '2026-10-20', image: null, alt: '', stats: null, insights: null, youtube: null },
     ];
 
     const TIMELINE = [
@@ -609,22 +631,37 @@
       { label: 'Date TBD', what: 'In-store activation, NYC' },
     ];
 
-    const STAT_LABELS = [
-      ['likes', 'Likes'], ['comments', 'Comments'], ['reposts', 'Reposts'], ['shares', 'Shares'],
+    const INSIGHT_LABELS = [
+      ['viewers', 'Viewers'], ['reposts', 'Reposts'], ['shares', 'Shares'],
       ['saves', 'Saves'], ['avgWatchSec', 'Avg. watch', ' sec'], ['follows', 'Follows'],
     ];
 
-    const fmt = new Intl.NumberFormat('en-US');
+    const exact = new Intl.NumberFormat('en-US');
+    const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
     const toDate = (iso) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
     const short = (iso) => toDate(iso).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).replace(',', '');
+    const brief = (iso) => toDate(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     const long = (iso) => toDate(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const isOut = (iso) => toDate(iso) <= today;
 
+    // '21.2K' -> { value: 21200, rounded: true }; 931 -> { value: 931, rounded: false }
+    function parseCount(v) {
+      if (typeof v === 'number') return { value: v, rounded: false };
+      const m = String(v).trim().match(/^([\d.,]+)\s*([km])?$/i);
+      if (!m) return { value: 0, rounded: false };
+      const base = Number(m[1].replace(/,/g, ''));
+      const mult = { k: 1e3, m: 1e6 }[(m[2] || '').toLowerCase()] || 1;
+      return { value: Math.round(base * mult), rounded: Boolean(m[2]) };
+    }
+    const show = (value, rounded) => (rounded ? compact : exact).format(value);
+
     // a number that counts up when it scrolls into view
-    const count = (value, suffix = '') =>
-      `<span class="num" data-count="${value}" data-suffix="${esc(suffix)}">${fmt.format(value)}${esc(suffix)}</span>`;
+    const count = (v, suffix = '') => {
+      const { value, rounded } = parseCount(v);
+      return `<span class="num" data-count="${value}" data-rounded="${rounded ? 1 : ''}" data-suffix="${esc(suffix)}">${show(value, rounded)}${esc(suffix)}</span>`;
+    };
 
     const phone = (ep) => `
       <div class="phone">
@@ -652,41 +689,51 @@
         <p class="yt-views">${count(ep.youtube.views)}<span>views</span></p>
       </div>`;
 
+    const cell = (label, v, suffix) => `<div><dt>${label}</dt><dd>${count(v, suffix)}</dd></div>`;
+
     document.getElementById('updated').textContent = `Stats as of ${long(STATS_UPDATED)}`;
     document.getElementById('stats-note').textContent =
-      `Instagram on @fitsfromthestreets as of ${long(STATS_UPDATED)}, and YouTube Shorts on @lids as of ${long(YOUTUBE_UPDATED)}.`;
+      `Instagram on @fitsfromthestreets and YouTube Shorts on @lids, as of ${long(STATS_UPDATED)}. All engagement is organic.`;
 
     // campaign totals across every episode that has stats
     const withStats = EPISODES.filter((ep) => ep.stats);
-    const sum = (key) => withStats.reduce((n, ep) => n + ep.stats[key], 0);
     const withYouTube = EPISODES.filter((ep) => ep.youtube);
-    const ytViews = withYouTube.reduce((n, ep) => n + ep.youtube.views, 0);
+    const total = (list) => list.reduce((acc, v) => {
+      const { value, rounded } = parseCount(v);
+      return { value: acc.value + value, rounded: acc.rounded || rounded };
+    }, { value: 0, rounded: false });
+    const asInput = ({ value, rounded }) => (rounded ? `${value / 1000}K` : value);
     const plural = (n) => `${n} episode${n === 1 ? '' : 's'}`;
-    document.getElementById('totals').innerHTML = [
-      [sum('views'), 'Instagram views'],
-      [ytViews, 'YouTube Shorts views on @lids'],
-      [sum('likes'), 'Instagram likes'],
-      [sum('comments'), 'Instagram comments'],
-    ].map(([value, label]) => `<div>${count(value)}<p class="label">${label}</p></div>`).join('');
-    document.getElementById('totals-note').textContent =
-      `Instagram across ${plural(withStats.length)} as of ${long(STATS_UPDATED)}. ` +
-      `YouTube Shorts across ${plural(withYouTube.length)} as of ${long(YOUTUBE_UPDATED)}.`;
 
-    document.getElementById('slides').innerHTML = withStats.map((ep) => `
+    document.getElementById('totals').innerHTML = [
+      [total(withStats.map((ep) => ep.stats.views)), 'Instagram views'],
+      [total(withYouTube.map((ep) => ep.youtube.views)), 'YouTube Shorts views on @lids'],
+      [total(withStats.map((ep) => ep.stats.likes)), 'Instagram likes'],
+      [total(withStats.map((ep) => ep.stats.comments)), 'Instagram comments'],
+    ].map(([t, label]) => `<div>${count(asInput(t))}<p class="label">${label}</p></div>`).join('');
+    document.getElementById('totals-note').textContent =
+      `Instagram across ${plural(withStats.length)} and YouTube Shorts across ${plural(withYouTube.length)}, as of ${long(STATS_UPDATED)}.`;
+
+    document.getElementById('slides').innerHTML = withStats.map((ep) => {
+      const insights = ep.insights
+        ? INSIGHT_LABELS.filter(([k]) => ep.insights[k] != null).map(([k, label, suffix]) => cell(label, ep.insights[k], suffix)).join('')
+        : '';
+      return `
       <article class="slide reveal" data-reveal aria-label="Episode ${ep.number}">
         ${phone(ep)}
         <div>
           ${meta(ep)}
           <div class="views">
             ${count(ep.stats.views)}
-            <p class="label">Instagram views from <strong>${fmt.format(ep.stats.viewers)}</strong> viewers</p>
+            <p class="label">Instagram views</p>
           </div>
           <div class="bar" aria-hidden="true"></div>
-          <dl class="stat-grid">${STAT_LABELS.map(([k, label, suffix]) =>
-            `<div><dt>${label}</dt><dd>${count(ep.stats[k] ?? 0, suffix)}</dd></div>`).join('')}</dl>
+          <dl class="stat-grid">${cell('Likes', ep.stats.likes)}${cell('Comments', ep.stats.comments)}${insights}</dl>
+          ${insights ? `<p class="grid-note">Viewers, reposts, shares, saves, watch time and follows are from Instagram Insights on ${brief(INSIGHTS_UPDATED)}.</p>` : ''}
           ${youtube(ep)}
         </div>
-      </article>`).join('');
+      </article>`;
+    }).join('');
 
     const upcoming = document.getElementById('upcoming');
     upcoming.innerHTML = EPISODES.filter((ep) => !ep.stats).map((ep) => `
@@ -694,11 +741,12 @@
         ${phone(ep)}
         <div>
           ${meta(ep)}
-          <p class="note">${isOut(ep.date) ? 'Instagram stats arrive with the next update.' : `Stats start after launch on ${short(ep.date)}.`}</p>
+          <p class="note">${isOut(ep.date) ? 'Stats arrive with the next update.' : `Stats start after launch on ${short(ep.date)}.`}</p>
           ${youtube(ep)}
         </div>
       </article>`).join('');
     if (withStats.length && upcoming.children.length) upcoming.style.marginTop = 'var(--space-5)';
+    if (upcoming.children.length === 1) upcoming.style.gridTemplateColumns = 'minmax(0, 560px)';
 
     // timeline: past items filled in, the latest one marked in red
     const current = TIMELINE.filter((t) => t.date && isOut(t.date)).pop();
@@ -715,12 +763,13 @@
 
     function runCount(el) {
       const target = Number(el.dataset.count);
+      const rounded = Boolean(el.dataset.rounded);
       const suffix = el.dataset.suffix || '';
       const duration = 1400 + String(target).length * 80;
       const start = performance.now();
       const frame = (now) => {
         const t = Math.min((now - start) / duration, 1);
-        el.textContent = fmt.format(Math.round(target * easeOut(t))) + suffix;
+        el.textContent = show(t < 1 ? Math.round(target * easeOut(t)) : target, rounded) + suffix;
         if (t < 1) requestAnimationFrame(frame);
       };
       requestAnimationFrame(frame);
