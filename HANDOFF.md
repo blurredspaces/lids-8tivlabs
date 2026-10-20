@@ -1,9 +1,9 @@
-# Handoff Spec: LIDS sign-in + The Handoff one-sheet
+# Handoff Spec: LIDS splash + The Handoff one-sheet
 
 ## Overview
 Two static pages, no build step.
 
-- **`index.html` (sign-in).** A black-on-white editorial page with the 8tivLabs logo, "LIDS" in Bodoni Moda, and name and password fields. When the password is correct, it shows "Thank you, [name]." with a hairline that fills over 2 seconds, then opens the one-sheet. The name is only displayed on screen. It is never stored or sent anywhere.
+- **`index.html` (splash).** A terminal-style prompt asks for the visitor's name, then a password. The 8tivLabs logo sits above the prompt. When the password is correct, it types back a thank-you, waits 2 seconds and opens the one-sheet. The name is only displayed on screen. It is never stored or sent anywhere.
 - **`onesheet.html` (one-sheet).** A single-page summary of the Fits From The Streets x LIDS campaign, *The Handoff*: concept, campaign totals, mechanic, per-episode Instagram stats, timeline and the KPI. It uses a dark graphite theme with 8tivLabs red accents, and its numbers count up as they scroll into view. Content comes from `Lids-Fits_8tivLabs-Updated.pdf` (updated 10.13.26).
 
 The source images live in `graphics/`, which is git-ignored. The web-sized copies the pages use are in `img/`.
@@ -14,10 +14,10 @@ The source images live in `graphics/`, which is git-ignored. The web-sized copie
 - `netlify/edge-functions/guard.ts` protects `/onesheet`, `/onesheet.html`, `/img/ep*` and `/HANDOFF.md`. Without a valid cookie, the page redirects to `/` and the files return `401`. Protected responses are sent with `Cache-Control: private, no-store`.
 - The cookie stores a SHA-256 hash of the password, not the password itself. Changing `ADMIN_PASSWORD` signs everyone out.
 - There is no lockout after repeated wrong guesses, so use a long password.
-- Edge functions don't run on a plain local server, so `/api/login` fails there and the sign-in page shows "Couldn't check the password." Use `netlify dev` to test the real flow locally.
+- Edge functions don't run on a plain local server, so `/api/login` fails there and the splash shows "Can't check the password right now." Use `netlify dev` to test the real flow locally.
 
 ## Layout
-- The sign-in page is a single 400px column centered on the page, with a small footer pinned to the bottom.
+- The splash is black on white, centered on both axes with CSS grid `place-items: center`.
 - The one-sheet's max content width is `--page-max` (1180px), centered. Side gutters are `--space-3` (16px) on mobile and `--space-5` (40px) from 760px up.
 - One-sheet order: masthead (Fits x Lids lockup, "Prepared by 8tivLabs"), hero (title + intro), campaign totals band, five-step chain, episode stat slides, upcoming-episode cards, plan row (Timeline + How we measure it), footer.
 - Depth has three layers: `--bg` for the page, `--surface` for panels and `--surface-2` for chips and stat cells.
@@ -41,12 +41,12 @@ One-sheet (`onesheet.html`):
 | `--radius-lg` / `-md` / `-sm` | 20 / 12 / 8px | Panels / steps and stat cells / small images |
 | `--shadow-panel` | inset top highlight + 2 soft black shadows | Every panel |
 
-Sign-in (`index.html`): `--paper` #ffffff, `--ink` #000000, `--ink-2` #6b6b6b (labels, subline, footer), `--rule` #e4e4e4 (field underlines), `--error` #b3001b. Type: Bodoni Moda 500 for "LIDS" (clamp 72–112px, -0.03em tracking) and the italic accents; IBM Plex Sans for labels, fields and the button. Spacing uses the same `--space-1` … `--space-6` scale as the one-sheet.
+Splash (`index.html`): `--paper` #ffffff, `--ink` #000000, VT323.
 
 ## Components
 | Component | Notes |
 |---|---|
-| Sign-in form (`index.html`) | Two visible underline fields with labels: "Your name" (`autocomplete=name`, max 40) and "Password" (`autocomplete=current-password`). Below them are an error line (`role=alert`) and a full-width black pill "Continue" button. Enter submits from either field. |
+| Name and password prompt (`index.html`) | A real `<input>` sits invisibly behind a mirrored `<span>`. It is a 40-character text field for the name, then becomes a password field. Empty input is ignored. Enter or the mobile Go key submits. |
 | Totals band | Sits under the "All engagement is organic" chip. Shows Instagram views (red), YouTube Shorts views on @lids, Instagram likes and Instagram comments, each summed across the episodes that have numbers. The note under it says how many episodes each platform covers and when the numbers were pulled. |
 | Chain | An `<ol>` of 5 step cards numbered 01–05 in red, joined by red connectors. Numbering is used because the steps really are a sequence. |
 | Episode slide | For episodes that have Instagram stats. A phone mockup on the left. On the right: episode number, date, status chip and title, then Instagram views (`--num-xl`), a red bar, a 4-column grid with likes and comments followed by any Insights numbers, a dated note for the Insights, and the YouTube strip. |
@@ -71,10 +71,10 @@ Edit the data block near the bottom of `onesheet.html`:
 ## States and interactions
 | Element | State | Behavior |
 |---|---|---|
-| Field | Hover / focus / invalid | Underline darkens / black 2px underline / red underline with the error message below |
-| Continue button | Hover / focus-visible / active / loading | Lifts 1px / 2px black outline with 3px offset / presses 1px at 80% opacity / disabled at 50% opacity and reads "Checking…" |
-| Errors | Submit | An empty name gives "Enter your name to continue." and an empty password gives "Enter the password to continue." A wrong password clears the field and says "That password didn't work. Try again." A network or server failure says "Couldn't check the password. Try again in a moment." Focus moves to the field at fault, and typing clears the error. |
-| Success | Correct password | The form is replaced by "Thank you, [name]." (Bodoni italic) and "Opening the campaign one-sheet.", with a hairline that fills over 2 seconds. Then the browser goes to `onesheet.html`. |
+| Prompt cursor | Focused | Blinks, 1.1s `steps(1)` |
+| Prompt cursor | Not focused | Static at 30% opacity, which tells the visitor to click to type. Clicking anywhere in the form focuses the input. |
+| Password | Typing | Each character shows as `*`. A wrong password prints "Wrong password. Try again." and asks again. A network or server error prints "Can't check the password right now. Try again in a moment." |
+| Reply | Correct password | Types 1 character every 38ms after a 350ms delay. Then, after 2 seconds, the browser goes to `onesheet.html`. |
 | "Start over" link | Hover / focus-visible / active | Lifts 1px and brightens / 2px red outline / presses down 1px at 70% opacity |
 
 ## Responsive behavior
@@ -89,24 +89,24 @@ Edit the data block near the bottom of `onesheet.html`:
 ## Edge cases
 - **Long names:** capped at 40 characters, and the text wraps anywhere (`overflow-wrap: anywhere`).
 - **Missing image or stats:** handled through the `null` values above. An undefined individual stat renders as 0.
-- **Fonts slow or blocked:** fall back to Didot or Times (sign-in display), Arial Narrow (numbers) and system sans. `display=swap` avoids invisible text while fonts load.
-- **No JavaScript:** the one-sheet's totals, episodes and timeline will be empty, and the sign-in form can't submit.
+- **Fonts slow or blocked:** fall back to Courier New (splash), Arial Narrow (numbers) and system sans. `display=swap` avoids invisible text while fonts load.
+- **No JavaScript:** the one-sheet's totals, episodes and timeline will be empty, and the splash can't submit.
 
 ## Animation / motion
 | Element | Trigger | Animation | Duration | Easing |
 |---|---|---|---|---|
-| Sign-in content | Page load, once | Fades in and rises 12px, 80ms apart | 900ms | cubic-bezier(0.16, 1, 0.3, 1) |
-| Sign-in hairline | Correct password | Fills left to right (scaleX), then the one-sheet opens | 2000ms | linear |
+| Splash cursor | While focused | Opacity blink | 1.1s loop | steps(1) |
+| Splash reply | Correct password | Typed out, then auto-open after 2s | 38ms/char | n/a |
 | One-sheet panels (`[data-reveal]`) | 25% of the panel enters the viewport, once | Fade in + rise 16px | 600ms opacity / 800ms transform | ease / cubic-bezier(0.22, 1.2, 0.36, 1) |
 | Numbers (`[data-count]`) | Same trigger as their panel, once | Count from 0 to the final value | 1.4s + 80ms per digit | ease-out quart |
 
 Only `opacity` and `transform` are animated. With `prefers-reduced-motion: reduce`, or in browsers without IntersectionObserver, everything shows at its final value with no motion.
 
 ## Accessibility
-- Sign-in focus order: name (autofocused), password, then Continue. Errors move focus to the field at fault and set `aria-invalid`. The password field references the error line with `aria-describedby`.
-- Every field has a visible `<label>`. The error line is `role="alert"` and the success message is `aria-live="polite"`.
+- Splash focus order: name input (autofocused), then the same field as a password input (`type=password`, `autocomplete=current-password`), then the one-sheet link, which receives focus once it appears.
+- The input has a `<label>` that contains the visible prompt. The transcript (`#log`) is `aria-live="polite"`. Cursors are `aria-hidden`.
 - On the one-sheet, the chain has `aria-label="How the Handoff works"`, each episode is an `<article>` with `aria-label="Episode N"`, and the phone frame image has `alt=""` (decorative) while each screen image has descriptive alt text.
-- Contrast: on the sign-in page, black on white is 21:1 and the #6b6b6b labels are 5.3:1. On the one-sheet, #dcdcde on #1b1c1e is about 13:1, and the #8d8e94 labels on #232427 panels are about 4.7:1, which passes AA.
+- Contrast: on the splash, black on white is 21:1. On the one-sheet, #dcdcde on #1b1c1e is about 13:1, and the #8d8e94 labels on #232427 panels are about 4.7:1, which passes AA.
 - The count-up text changes as the animation runs, but none of it is inside a live region, so screen readers aren't flooded.
 
 ## Open items

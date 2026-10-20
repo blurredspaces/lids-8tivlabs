@@ -4,30 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>8tivlabs LIDS</title>
-  <meta name="robots" content="noindex">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   <style>
     :root {
       --paper: #ffffff;
       --ink: #000000;
-      --ink-2: #6b6b6b;      /* secondary text */
-      --rule: #e4e4e4;       /* hairlines */
-      --error: #b3001b;
-
-      --font-display: "Bodoni Moda", "Didot", "Times New Roman", serif;
-      --font-body: "IBM Plex Sans", system-ui, sans-serif;
-
-      --space-1: 4px;
-      --space-2: 8px;
-      --space-3: 16px;
-      --space-4: 24px;
-      --space-5: 40px;
-      --space-6: 64px;
-
-      --ease-spring: cubic-bezier(0.22, 1.2, 0.36, 1);
-      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ink-dim: #6b6b6b;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -37,208 +21,143 @@
     body {
       background: var(--paper);
       color: var(--ink);
-      font-family: var(--font-body);
-      font-size: 1rem;
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
+      font-family: "VT323", "Courier New", monospace;
       display: grid;
-      grid-template-rows: 1fr auto;
-      min-height: 100%;
-      padding: var(--space-4) var(--space-3);
+      place-items: center;
+      overflow: hidden;
+      padding: 16px;
     }
 
-    main {
-      align-self: center;
-      justify-self: center;
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-    }
+    main { text-align: center; }
 
-    /* ---------- masthead ---------- */
-    .logo { display: block; width: 36px; height: 36px; margin: 0 auto var(--space-5); }
+    .logo {
+      display: block;
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
+    }
 
     h1 {
-      font-family: var(--font-display);
-      font-optical-sizing: auto;
-      font-weight: 500;
-      font-size: clamp(4.5rem, 18vw, 7rem);
-      line-height: 0.9;
-      letter-spacing: -0.03em;
+      font-weight: 400;
+      font-size: clamp(3rem, 11vw, 5.5rem);
+      line-height: 0.85;
+      letter-spacing: 0.04em;
     }
 
-    .sub {
-      margin-top: var(--space-3);
-      font-size: 0.9375rem;
-      color: var(--ink-2);
-    }
-    .sub em {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 1.125rem;
-      color: var(--ink);
+    .terminal {
+      margin-top: 1.5em;
+      font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+      line-height: 1.4;
+      min-height: 5.6em;
+      cursor: text;
     }
 
-    .divider { width: 40px; height: 1px; background: var(--ink); margin: var(--space-5) auto; border: 0; }
+    .terminal p { white-space: pre-wrap; overflow-wrap: anywhere; }
 
-    /* ---------- form ---------- */
-    form { text-align: left; }
-
-    .field + .field { margin-top: var(--space-4); }
-
-    label {
-      display: block;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      color: var(--ink-2);
-      margin-bottom: var(--space-1);
-    }
-
-    input {
-      display: block;
-      width: 100%;
-      padding: var(--space-2) 0 10px;
-      border: 0;
-      border-bottom: 1px solid var(--rule);
-      border-radius: 0;
-      background: transparent;
-      color: var(--ink);
-      font: 400 1.0625rem/1.4 var(--font-body);
-      outline: none;
-      transition: border-color 200ms ease;
-    }
-    input::placeholder { color: #b5b5b5; }
-    input:hover { border-bottom-color: #bdbdbd; }
-    input:focus-visible { border-bottom-color: var(--ink); box-shadow: 0 1px 0 0 var(--ink); }
-    input[aria-invalid="true"] { border-bottom-color: var(--error); box-shadow: 0 1px 0 0 var(--error); }
-
-    .error {
-      min-height: 1.5em;
-      margin-top: var(--space-2);
-      font-size: 0.8125rem;
-      color: var(--error);
-    }
-
-    button {
-      position: relative;
-      width: 100%;
-      margin-top: var(--space-4);
-      padding: 14px var(--space-4);
-      border: 1px solid var(--ink);
-      border-radius: 999px;
-      background: var(--ink);
-      color: var(--paper);
-      font: 500 0.9375rem/1 var(--font-body);
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      transition: transform 250ms var(--ease-spring), opacity 150ms ease;
-    }
-    button:hover { transform: translateY(-1px); }
-    button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-    button:active { transform: translateY(1px); opacity: 0.8; }
-    button:disabled { cursor: default; opacity: 0.5; transform: none; }
-
-    /* ---------- success ---------- */
-    .welcome { display: none; }
-    .is-done form { display: none; }
-    .is-done .welcome { display: block; }
-
-    .welcome p:first-child {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 1.75rem;
-      line-height: 1.2;
-    }
-    .welcome p + p { margin-top: var(--space-2); color: var(--ink-2); font-size: 0.9375rem; }
-
-    .progress {
+    /* the real input is invisible; what you type is echoed in .typed */
+    .terminal input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
       height: 1px;
-      margin-top: var(--space-5);
-      background: var(--rule);
-      overflow: hidden;
+      border: 0;
+      font-size: 16px; /* stops iOS zooming on focus */
     }
-    .progress span {
-      display: block;
-      height: 100%;
+
+    .cursor {
+      display: inline-block;
+      width: 0.5em;
+      height: 0.9em;
+      margin-left: 0.05em;
+      vertical-align: -0.12em;
       background: var(--ink);
-      transform: scaleX(0);
-      transform-origin: left;
-    }
-    .is-done .progress span { animation: fill 2000ms linear forwards; }
-    @keyframes fill { to { transform: scaleX(1); } }
-
-    footer {
-      text-align: center;
-      font-size: 0.75rem;
-      color: var(--ink-2);
-      padding-top: var(--space-5);
+      animation: blink 1.1s steps(1) infinite;
     }
 
-    /* ---------- one load sequence ---------- */
-    .enter { opacity: 0; transform: translateY(12px); animation: enter 900ms var(--ease-out) forwards; }
-    .enter:nth-child(2) { animation-delay: 80ms; }
-    .enter:nth-child(3) { animation-delay: 160ms; }
-    .enter:nth-child(4) { animation-delay: 240ms; }
-    .enter:nth-child(5) { animation-delay: 320ms; }
-    @keyframes enter { to { opacity: 1; transform: none; } }
+    .terminal:not(:focus-within) .prompt-line .cursor { animation: none; opacity: 0.3; }
+
+
+    @keyframes blink { 50% { opacity: 0; } }
 
     @media (prefers-reduced-motion: reduce) {
-      .enter { opacity: 1; transform: none; animation: none; }
-      button, input { transition: none; }
-      .is-done .progress span { animation: none; transform: scaleX(1); }
+      .cursor { animation: none; }
     }
   </style>
 </head>
 <body>
-  <main id="main">
-    <img class="logo enter" src="img/8tivlabs-logo.jpg" alt="8tivLabs" width="36" height="36">
-    <h1 class="enter">LIDS</h1>
-    <p class="sub enter"><em>The Handoff</em>, a brand campaign by 8tivLabs</p>
-    <hr class="divider enter">
+  <main>
+    <img class="logo" src="img/8tivlabs-logo.jpg" alt="8tivLabs" width="48" height="48">
+    <h1>LIDS</h1>
 
-    <div class="enter">
-      <form id="signin" novalidate>
-        <div class="field">
-          <label for="name">Your name</label>
-          <input id="name" name="name" type="text" autocomplete="name" maxlength="40" required autofocus>
-        </div>
-        <div class="field">
-          <label for="password">Password</label>
-          <input id="password" name="password" type="password" autocomplete="current-password" maxlength="128" required aria-describedby="error">
-        </div>
-        <p class="error" id="error" role="alert"></p>
-        <button type="submit" id="submit">Continue</button>
-      </form>
-
-      <div class="welcome" aria-live="polite">
-        <p id="welcome-name"></p>
-        <p>Opening the campaign one-sheet.</p>
-        <div class="progress" aria-hidden="true"><span></span></div>
-      </div>
-    </div>
+    <form class="terminal" id="term" autocomplete="off">
+      <div id="log" aria-live="polite"></div>
+      <label class="prompt-line" id="prompt-line" for="field">
+        <p><span id="prompt">Your name?</span> <span class="typed" id="typed"></span><span class="cursor" aria-hidden="true"></span></p>
+      </label>
+      <input id="field" name="name" type="text" maxlength="40" spellcheck="false" autocapitalize="words" autocomplete="off" autofocus>
+    </form>
   </main>
 
-  <footer>Confidential. Prepared by 8tivLabs.</footer>
-
   <script>
-    const main = document.getElementById('main');
-    const form = document.getElementById('signin');
-    const nameInput = document.getElementById('name');
-    const passwordInput = document.getElementById('password');
-    const error = document.getElementById('error');
-    const submit = document.getElementById('submit');
+    const form = document.getElementById('term');
+    const input = document.getElementById('field');
+    const log = document.getElementById('log');
+    const promptLine = document.getElementById('prompt-line');
+    const promptText = document.getElementById('prompt');
+    const typed = document.getElementById('typed');
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    function showError(message, field) {
-      error.textContent = message;
-      field.setAttribute('aria-invalid', 'true');
-      field.focus();
+    const PROMPTS = { name: 'Your name?', password: 'Password?' };
+    let step = 'name';
+    let name = '';
+
+    const mask = (value) => '*'.repeat(value.length);
+    const echo = () => { typed.textContent = step === 'password' ? mask(input.value) : input.value; };
+
+    form.addEventListener('click', (e) => { if (!input.disabled) input.focus(); });
+    input.addEventListener('input', echo);
+
+    function ask(nextStep) {
+      step = nextStep;
+      promptText.textContent = PROMPTS[step];
+      input.type = step === 'password' ? 'password' : 'text';
+      input.maxLength = step === 'password' ? 128 : 40;
+      input.autocomplete = step === 'password' ? 'current-password' : 'off';
+      input.value = '';
+      echo();
+      promptLine.hidden = false;
+      input.disabled = false;
+      input.focus();
     }
 
-    [nameInput, passwordInput].forEach((field) =>
-      field.addEventListener('input', () => {
-        field.removeAttribute('aria-invalid');
-        error.textContent = '';
-      }));
+    function addLine(text) {
+      const p = document.createElement('p');
+      p.textContent = text;
+      log.append(p);
+      return p;
+    }
+
+    // type a line out one character at a time, like an old terminal
+    function typeOut(message, done) {
+      if (reduceMotion) { addLine(message); return done(); }
+      const line = addLine('');
+      const text = document.createTextNode('');
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor';
+      cursor.setAttribute('aria-hidden', 'true');
+      line.append(text, cursor);
+      let i = 0;
+      const tick = () => {
+        text.data = message.slice(0, ++i);
+        if (i < message.length) return setTimeout(tick, 38);
+        cursor.remove();
+        done();
+      };
+      setTimeout(tick, 350);
+    }
+
+    // give people a beat to read the reply, then open the one-sheet
+    const openOneSheet = () => setTimeout(() => { location.href = 'onesheet.html'; }, 2000);
 
     async function checkPassword(password) {
       try {
@@ -256,30 +175,29 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = nameInput.value.trim();
-      const password = passwordInput.value;
+      const value = input.value;
+      if (!value.trim()) return;
 
-      if (!name) return showError('Enter your name to continue.', nameInput);
-      if (!password) return showError('Enter the password to continue.', passwordInput);
+      input.disabled = true;
+      promptLine.hidden = true;
 
-      submit.disabled = true;
-      submit.textContent = 'Checking…';
-      const result = await checkPassword(password);
-      submit.disabled = false;
-      submit.textContent = 'Continue';
-
-      if (result === 'wrong') {
-        passwordInput.value = '';
-        return showError("That password didn't work. Try again.", passwordInput);
-      }
-      if (result === 'error') {
-        return showError("Couldn't check the password. Try again in a moment.", passwordInput);
+      if (step === 'name') {
+        name = value.trim();
+        addLine(`${PROMPTS.name} ${name}`);
+        return ask('password');
       }
 
-      document.getElementById('welcome-name').textContent = `Thank you, ${name}.`;
-      main.classList.add('is-done');
-      // give people a beat to read it, then open the one-sheet
-      setTimeout(() => { location.href = 'onesheet.html'; }, 2000);
+      addLine(`${PROMPTS.password} ${mask(value)}`);
+      input.value = '';
+      const result = await checkPassword(value);
+
+      if (result === 'ok') {
+        typeOut(`Thank you, ${name}. Here is the latest on the LIDS campaign.`, openOneSheet);
+      } else if (result === 'wrong') {
+        typeOut('Wrong password. Try again.', () => ask('password'));
+      } else {
+        typeOut("Can't check the password right now. Try again in a moment.", () => ask('password'));
+      }
     });
   </script>
 </body>
