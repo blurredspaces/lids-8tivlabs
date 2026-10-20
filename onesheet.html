@@ -270,6 +270,26 @@
     }
     .chip.is-live { background: var(--red-soft); color: #ff8a97; }
     .chip.is-live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+    .ep-title { flex-basis: 100%; color: var(--text-hi); font-size: var(--text-md); font-weight: 500; margin-top: calc(var(--space-1) * -1); }
+
+    /* YouTube Shorts on the @lids channel */
+    .yt {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-top: var(--space-2);
+      padding: var(--space-3);
+      border-radius: var(--radius-md);
+      background: var(--surface-2);
+      border-left: 3px solid var(--red);
+    }
+    .yt-icon { flex: none; width: 28px; height: 20px; }
+    .yt-what { line-height: 1.35; font-size: var(--text-xs); color: var(--text-2); }
+    .yt-what b { display: block; color: var(--text-hi); font-size: var(--text-sm); font-weight: 600; }
+    .yt-views { margin-left: auto; text-align: right; }
+    .yt-views .num { font-size: var(--num-sm); }
+    .yt-views span:last-child { display: block; font-size: var(--text-xs); color: var(--text-2); }
+    .card .yt { margin-top: var(--space-3); }
 
     .views .num { font-size: var(--num-xl); }
     .views .label { font-size: var(--text-md); color: var(--text-2); margin-top: var(--space-2); }
@@ -310,7 +330,7 @@
       box-shadow: var(--shadow-panel);
     }
     .card .slide-meta { margin-bottom: var(--space-2); }
-    .card p { color: var(--text-2); font-size: var(--text-sm); }
+    .card .note { color: var(--text-2); font-size: var(--text-sm); }
 
     /*
       Phone mockup. The frame PNG (1506x3102) has a transparent screen at
@@ -522,24 +542,37 @@
       Update stats here. Leave `stats` as null until an episode has numbers,
       and `image` as null until there is a still. Dates are YYYY-MM-DD.
     */
-    const STATS_UPDATED = '2026-10-13';
+    const STATS_UPDATED = '2026-10-13';    // Instagram numbers
+    const YOUTUBE_UPDATED = '2026-10-20';  // YouTube Shorts numbers on the @lids channel
     const EPISODES = [
       {
         number: 1,
+        title: 'Rule of Thirds',
         date: '2026-09-29',
         image: 'img/ep1.jpg',
         alt: 'Episode 1 Instagram post: subject in a black White Sox cap',
         stats: { views: 28209, viewers: 19393, likes: 918, comments: 145, reposts: 67, shares: 67, saves: 41, avgWatchSec: 8, follows: 0 },
+        youtube: { views: 350 },
       },
       {
         number: 2,
+        title: 'Same Cap, Different Eye',
         date: '2026-10-06',
         image: 'img/ep2.jpg',
         alt: 'Episode 2 Instagram post: subject in a burgundy leather coat, hands on her cap',
         stats: { views: 18915, viewers: 11961, likes: 644, comments: 156, reposts: 52, shares: 38, saves: 31, avgWatchSec: 6, follows: 0 },
+        youtube: { views: 550 },
       },
-      { number: 3, date: '2026-10-13', image: 'img/ep3.jpg', alt: 'Episode 3 subject in a blue 76ers cap', stats: null },
-      { number: 4, date: '2026-10-20', image: null, alt: '', stats: null },
+      {
+        number: 3,
+        title: 'Be Colorful, Not Careful',
+        date: '2026-10-13',
+        image: 'img/ep3.jpg',
+        alt: 'Episode 3 subject in a blue 76ers cap',
+        stats: null,
+        youtube: { views: 334 },
+      },
+      { number: 4, title: null, date: '2026-10-20', image: null, alt: '', stats: null, youtube: null },
     ];
 
     const TIMELINE = [
@@ -582,19 +615,35 @@
         <h3>Episode ${ep.number}</h3>
         <span>${short(ep.date)}</span>
         <span class="chip${isOut(ep.date) ? ' is-live' : ''}">${isOut(ep.date) ? 'Out now' : 'Coming up'}</span>
+        ${ep.title ? `<p class="ep-title">${esc(ep.title)}</p>` : ''}
+      </div>`;
+
+    const youtube = (ep) => !ep.youtube ? '' : `
+      <div class="yt">
+        <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
+        <p class="yt-what"><b>YouTube Shorts</b>on the @lids channel</p>
+        <p class="yt-views">${count(ep.youtube.views)}<span>views</span></p>
       </div>`;
 
     document.getElementById('updated').textContent = `Stats as of ${long(STATS_UPDATED)}`;
-    document.getElementById('stats-note').textContent = `Instagram, so far. Pulled ${long(STATS_UPDATED)}.`;
+    document.getElementById('stats-note').textContent =
+      `Instagram on @fitsfromthestreets as of ${long(STATS_UPDATED)}, and YouTube Shorts on @lids as of ${long(YOUTUBE_UPDATED)}.`;
 
     // campaign totals across every episode that has stats
     const withStats = EPISODES.filter((ep) => ep.stats);
     const sum = (key) => withStats.reduce((n, ep) => n + ep.stats[key], 0);
+    const withYouTube = EPISODES.filter((ep) => ep.youtube);
+    const ytViews = withYouTube.reduce((n, ep) => n + ep.youtube.views, 0);
+    const plural = (n) => `${n} episode${n === 1 ? '' : 's'}`;
     document.getElementById('totals').innerHTML = [
-      ['views', 'Total views'], ['likes', 'Likes'], ['comments', 'Comments'], ['shares', 'Shares'],
-    ].map(([k, label]) => `<div>${count(sum(k))}<p class="label">${label}</p></div>`).join('');
+      [sum('views'), 'Instagram views'],
+      [ytViews, 'YouTube Shorts views on @lids'],
+      [sum('likes'), 'Instagram likes'],
+      [sum('comments'), 'Instagram comments'],
+    ].map(([value, label]) => `<div>${count(value)}<p class="label">${label}</p></div>`).join('');
     document.getElementById('totals-note').textContent =
-      `Instagram totals across ${withStats.length} episode${withStats.length === 1 ? '' : 's'}, as of ${long(STATS_UPDATED)}.`;
+      `Instagram across ${plural(withStats.length)} as of ${long(STATS_UPDATED)}. ` +
+      `YouTube Shorts across ${plural(withYouTube.length)} as of ${long(YOUTUBE_UPDATED)}.`;
 
     document.getElementById('slides').innerHTML = withStats.map((ep) => `
       <article class="slide reveal" data-reveal aria-label="Episode ${ep.number}">
@@ -603,11 +652,12 @@
           ${meta(ep)}
           <div class="views">
             ${count(ep.stats.views)}
-            <p class="label">views from <strong>${fmt.format(ep.stats.viewers)}</strong> viewers</p>
+            <p class="label">Instagram views from <strong>${fmt.format(ep.stats.viewers)}</strong> viewers</p>
           </div>
           <div class="bar" aria-hidden="true"></div>
           <dl class="stat-grid">${STAT_LABELS.map(([k, label, suffix]) =>
             `<div><dt>${label}</dt><dd>${count(ep.stats[k] ?? 0, suffix)}</dd></div>`).join('')}</dl>
+          ${youtube(ep)}
         </div>
       </article>`).join('');
 
@@ -617,7 +667,8 @@
         ${phone(ep)}
         <div>
           ${meta(ep)}
-          <p>${isOut(ep.date) ? 'Stats arrive with the next update.' : `Stats start after launch on ${short(ep.date)}.`}</p>
+          <p class="note">${isOut(ep.date) ? 'Instagram stats arrive with the next update.' : `Stats start after launch on ${short(ep.date)}.`}</p>
+          ${youtube(ep)}
         </div>
       </article>`).join('');
     if (withStats.length && upcoming.children.length) upcoming.style.marginTop = 'var(--space-5)';

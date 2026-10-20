@@ -47,17 +47,20 @@ Splash (`index.html`): `--paper` #ffffff, `--ink` #000000, VT323.
 | Component | Notes |
 |---|---|
 | Name and password prompt (`index.html`) | A real `<input>` sits invisibly behind a mirrored `<span>`. It is a 40-character text field for the name, then becomes a password field. Empty input is ignored. Enter or the mobile Go key submits. |
-| Totals band | Sums views, likes, comments and shares across every episode that has stats. Total views is shown in red. |
+| Totals band | Instagram views (red), YouTube Shorts views on @lids, Instagram likes and Instagram comments, each summed across the episodes that have numbers. The note under it says how many episodes each platform covers and when the numbers were pulled. |
 | Chain | An `<ol>` of 5 step cards numbered 01–05 in red, joined by red connectors. Numbering is used because the steps really are a sequence. |
-| Episode slide | For episodes that have stats. A phone mockup on the left. On the right: episode name, date and status chip, views (`--num-xl`), viewers, a red bar, then a 4-column grid of 7 stats. |
-| Upcoming card | For episodes without stats: a small phone with a status line. |
+| Episode slide | For episodes that have Instagram stats. A phone mockup on the left. On the right: episode number, date, status chip and title, then Instagram views (`--num-xl`) and viewers, a red bar, a 4-column grid of 7 stats, and the YouTube strip. |
+| YouTube strip | A red-edged row with a play icon, "YouTube Shorts on the @lids channel" and the view count, which counts up. Shown on slides and upcoming cards for any episode with `youtube` data. |
+| Upcoming card | For episodes without Instagram stats: a small phone, a status line and, when available, the YouTube strip. |
 | Phone mockup | The frame is 1506×3102. Its transparent screen spans x 44–1466 and y 32–3069, inset as `left 2.92% / right 2.66% / top 1.03% / bottom 1.06%`, with `border-radius: 15% / 7.2%`. Screen images use `object-fit: cover` anchored to the bottom. |
 | Status chip | Computed from each episode's `date` against the viewer's local date: "Out now" (red) on or after the date, otherwise "Coming up". |
 | Timeline | Built from the `TIMELINE` array. The latest dated item that has already happened is red, earlier ones are filled gray, and later ones are hollow. |
 
 ## Updating stats
 Edit the data block near the bottom of `onesheet.html`:
-- Set `STATS_UPDATED` to the date the numbers were pulled. It drives every "as of" and "Pulled" label.
+- Set `STATS_UPDATED` to the date the Instagram numbers were pulled, and `YOUTUBE_UPDATED` to the date the YouTube Shorts numbers were pulled. Every "as of" label reads from these two.
+- Each episode's `title` is its YouTube Shorts title without the "The Handoff Ep. N" part.
+- Set `youtube: { views }` from the @lids YouTube Shorts count. Use `null` until the Short is live.
 - For each episode, fill `stats` with `{ views, viewers, likes, comments, reposts, shares, saves, avgWatchSec, follows }`, all as plain numbers. Commas and the " sec" suffix are added automatically. Filling in `stats` moves the episode from an upcoming card to a full slide and adds it to the totals.
 - `image: null` shows "Still coming" on a black screen. `stats: null` shows "Stats arrive with the next update." once the episode is out, or "Stats start after launch on …" before then.
 - New stills should be phone-shaped (about 9:19.5), around 640px wide, saved as JPG in `img/`.
