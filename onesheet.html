@@ -5,27 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>The Handoff | Fits From The Streets x LIDS</title>
   <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="dark">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=VT323&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       /* color */
-      --paper: #ffffff;
-      --ink: #000000;
-      --ink-2: #555555;       /* secondary text */
-      --tint: #f2f2f2;        /* empty image wells */
-      --live: #d7262b;        /* Fits red, from the logo; only marks "out now" */
+      --bg: #1b1c1e;          /* base */
+      --surface: #232427;     /* elevated panels */
+      --surface-2: #2c2d31;   /* floating: chips, stat cells */
+      --line: rgba(255, 255, 255, 0.09);
+      --text: #dcdcde;        /* light gray body */
+      --text-hi: #f4f4f5;     /* numbers, titles */
+      --text-2: #8d8e94;      /* labels, secondary */
+      --red: #fa273d;         /* 8tivLabs red */
+      --red-soft: rgba(250, 39, 61, 0.14);
 
       /* type */
-      --font-display: "VT323", "Courier New", monospace;
+      --font-display: "Archivo", "Arial Narrow", sans-serif;
       --font-body: "IBM Plex Sans", system-ui, sans-serif;
+      --text-xs: 0.8125rem;   /* 13 */
       --text-sm: 0.875rem;    /* 14 */
       --text-md: 1rem;        /* 16 */
       --text-lg: 1.25rem;     /* 20 */
-      --display-sm: 1.75rem;  /* 28 */
-      --display-md: 2.75rem;  /* 44 */
-      --display-xl: clamp(4.5rem, 15vw, 10rem);
+      --num-sm: 2rem;         /* 32 */
+      --num-md: clamp(2.5rem, 5vw, 3.5rem);
+      --num-xl: clamp(4rem, 11vw, 7.5rem);
+      --title: clamp(4rem, 13vw, 9.5rem);
 
       /* space */
       --space-1: 4px;
@@ -34,20 +41,42 @@
       --space-4: 24px;
       --space-5: 40px;
       --space-6: 64px;
+      --space-7: 104px;
 
-      --rule: 2px solid var(--ink);
-      --page-max: 1160px;
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-panel:
+        0 1px 0 rgba(255, 255, 255, 0.04) inset,
+        0 2px 6px rgba(0, 0, 0, 0.18),
+        0 18px 40px -12px rgba(0, 0, 0, 0.45);
+      --ease-spring: cubic-bezier(0.22, 1.2, 0.36, 1);
+      --page-max: 1180px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: var(--paper);
-      color: var(--ink);
+      background:
+        radial-gradient(60rem 40rem at 100% -10%, rgba(250, 39, 61, 0.10), transparent 60%),
+        radial-gradient(50rem 40rem at -10% 30%, rgba(255, 255, 255, 0.035), transparent 60%),
+        var(--bg);
+      color: var(--text);
       font-family: var(--font-body);
       font-size: var(--text-md);
-      line-height: 1.6;
+      line-height: 1.7;
       -webkit-font-smoothing: antialiased;
+    }
+
+    /* film grain */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.06;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
     .page {
@@ -56,93 +85,233 @@
       padding: var(--space-4) var(--space-3) var(--space-6);
     }
 
+    .num {
+      font-family: var(--font-display);
+      font-stretch: 70%;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-hi);
+      line-height: 0.9;
+      letter-spacing: -0.01em;
+    }
+
     a { color: inherit; }
-    a:hover { background: var(--ink); color: var(--paper); text-decoration: none; }
-    a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-    a:active { opacity: 0.6; }
+    .link {
+      display: inline-block;
+      text-decoration: none;
+      color: var(--text);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      transition: transform 250ms var(--ease-spring), opacity 150ms ease;
+    }
+    .link:hover { transform: translateY(-1px); color: var(--text-hi); }
+    .link:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+    .link:active { transform: translateY(1px); opacity: 0.7; }
 
     /* ---------- masthead ---------- */
     .masthead {
       display: flex;
       align-items: center;
       gap: var(--space-3);
-      padding-bottom: var(--space-3);
-      border-bottom: var(--rule);
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--line);
     }
-    .masthead img { width: 56px; height: 56px; flex: none; }
-    .masthead .who { font-weight: 600; line-height: 1.3; }
-    .masthead .who span { display: block; font-weight: 400; color: var(--ink-2); font-size: var(--text-sm); }
-    .masthead .updated { margin-left: auto; font-size: var(--text-sm); color: var(--ink-2); text-align: right; }
+    .lockup { display: flex; align-items: center; gap: var(--space-2); }
+    .lockup img { width: 44px; height: 44px; border-radius: var(--radius-sm); }
+    .lockup .x { color: var(--text-2); font-size: var(--text-sm); }
+    .by {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--text-2);
+      text-align: right;
+      line-height: 1.4;
+    }
+    .by img { width: 32px; height: 32px; border-radius: 6px; }
 
-    /* ---------- title + concept ---------- */
-    .hero { padding: var(--space-5) 0 var(--space-4); }
+    /* ---------- hero ---------- */
+    .hero { padding: var(--space-6) 0 var(--space-5); }
+    .kicker { color: var(--red); font-weight: 600; font-size: var(--text-sm); margin-bottom: var(--space-3); }
     .hero h1 {
       font-family: var(--font-display);
-      font-weight: 400;
-      font-size: var(--display-xl);
-      line-height: 0.8;
-      letter-spacing: -0.01em;
+      font-stretch: 68%;
+      font-weight: 900;
+      font-size: var(--title);
+      line-height: 0.82;
+      letter-spacing: -0.03em;
+      color: var(--text-hi);
+      text-transform: uppercase;
     }
     .intro {
       display: grid;
       gap: var(--space-4);
-      margin-top: var(--space-4);
+      margin-top: var(--space-5);
     }
-    .intro p { max-width: 60ch; }
-    .intro .lead { font-size: var(--text-lg); line-height: 1.5; }
-    .intro h2 { font-size: var(--text-md); font-weight: 600; margin-bottom: var(--space-1); }
+    .intro .lead { font-size: var(--text-lg); line-height: 1.6; color: var(--text-hi); max-width: 34ch; }
+    .intro h2 { font-size: var(--text-md); font-weight: 600; color: var(--text-hi); margin-bottom: var(--space-1); }
+    .intro p { max-width: 58ch; }
 
-    /* ---------- the chain ---------- */
+    /* ---------- campaign totals ---------- */
+    .totals {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-panel);
+    }
+    .totals > div { background: var(--surface); padding: var(--space-4); }
+    .totals .num { font-size: var(--num-md); }
+    .totals .label { font-size: var(--text-sm); color: var(--text-2); margin-top: var(--space-2); }
+    .totals > div:first-child .num { color: var(--red); }
+    .totals-note { font-size: var(--text-xs); color: var(--text-2); margin-top: var(--space-3); }
+
+    /* ---------- sections ---------- */
+    section { margin-top: var(--space-7); }
+    .section-head { margin-bottom: var(--space-5); }
+    .section-head h2 {
+      font-family: var(--font-display);
+      font-stretch: 75%;
+      font-weight: 800;
+      font-size: clamp(2.25rem, 5vw, 3.25rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--text-hi);
+    }
+    .section-head p { color: var(--text-2); margin-top: var(--space-2); max-width: 60ch; }
+
+    /* ---------- chain ---------- */
     .chain {
       list-style: none;
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      border-top: var(--rule);
-      border-bottom: var(--rule);
+      gap: var(--space-3);
       counter-reset: step;
+      position: relative;
     }
     .chain li {
       counter-increment: step;
-      padding: var(--space-3) var(--space-3) var(--space-3) 0;
-      font-weight: 500;
-      line-height: 1.3;
       position: relative;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-3) var(--space-3);
+      font-weight: 500;
+      color: var(--text-hi);
+      line-height: 1.35;
+      box-shadow: var(--shadow-panel);
     }
     .chain li::before {
-      content: counter(step);
+      content: counter(step, decimal-leading-zero);
       display: block;
       font-family: var(--font-display);
-      font-size: var(--display-sm);
+      font-stretch: 70%;
+      font-weight: 800;
+      font-size: var(--num-sm);
       line-height: 1;
-      margin-bottom: var(--space-2);
+      color: var(--red);
+      margin-bottom: var(--space-3);
     }
-    .chain li + li { padding-left: var(--space-3); border-left: 1px solid var(--ink); }
+    /* connector to the next step */
+    .chain li:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 40px;
+      right: calc(var(--space-3) * -1 - 1px);
+      width: calc(var(--space-3) + 2px);
+      height: 2px;
+      background: var(--red);
+    }
 
-    /* ---------- sections ---------- */
-    section { margin-top: var(--space-6); }
-    .section-head {
+    /* ---------- episode slides ---------- */
+    .slides { display: grid; gap: var(--space-5); }
+    .slide {
+      display: grid;
+      grid-template-columns: minmax(200px, 280px) 1fr;
+      gap: var(--space-6);
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-panel);
+    }
+    .slide-meta {
       display: flex;
       flex-wrap: wrap;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: var(--space-2) var(--space-4);
+      align-items: center;
+      gap: var(--space-2) var(--space-3);
+      font-size: var(--text-sm);
+      color: var(--text-2);
       margin-bottom: var(--space-4);
     }
-    .section-head h2 {
+    .slide-meta h3 {
       font-family: var(--font-display);
-      font-weight: 400;
-      font-size: var(--display-md);
-      line-height: 1;
+      font-stretch: 75%;
+      font-weight: 800;
+      font-size: var(--text-lg);
+      color: var(--text-hi);
+      letter-spacing: 0.01em;
     }
-    .section-head p { color: var(--ink-2); font-size: var(--text-sm); }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: var(--text-xs);
+      font-weight: 600;
+    }
+    .chip.is-live { background: var(--red-soft); color: #ff8a97; }
+    .chip.is-live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
 
-    /* ---------- episode cards ---------- */
-    .episodes {
+    .views .num { font-size: var(--num-xl); }
+    .views .label { font-size: var(--text-md); color: var(--text-2); margin-top: var(--space-2); }
+    .views .label strong { color: var(--text-hi); font-weight: 600; }
+    .bar { width: 48px; height: 3px; background: var(--red); margin: var(--space-4) 0; border-radius: 2px; }
+
+    .stat-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: var(--space-4);
+      gap: var(--space-2);
     }
-    .ep { display: flex; flex-direction: column; }
+    .stat-grid div {
+      display: flex;
+      flex-direction: column;
+      background: var(--surface-2);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+    }
+    .stat-grid dd { order: -1; }
+    .stat-grid .num { font-size: var(--num-sm); }
+    .stat-grid dt { font-size: var(--text-xs); color: var(--text-2); margin-top: var(--space-1); }
+
+    /* compact cards for episodes still waiting on stats */
+    .upcoming {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-5);
+    }
+    .card {
+      display: grid;
+      grid-template-columns: minmax(110px, 160px) 1fr;
+      gap: var(--space-4);
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-panel);
+    }
+    .card .slide-meta { margin-bottom: var(--space-2); }
+    .card p { color: var(--text-2); font-size: var(--text-sm); }
+
     /*
       Phone mockup. The frame PNG (1506x3102) has a transparent screen at
       x 44–1466, y 32–3069; the insets below are those edges as percentages.
@@ -151,8 +320,7 @@
       position: relative;
       aspect-ratio: 1506 / 3102;
       width: 100%;
-      max-width: 260px;
-      margin: 0 auto var(--space-3);
+      filter: drop-shadow(0 24px 30px rgba(0, 0, 0, 0.5));
     }
     .phone-screen {
       position: absolute;
@@ -162,223 +330,190 @@
       bottom: 1.06%;
       border-radius: 15% / 7.2%;
       overflow: hidden;
-      background: var(--ink);
+      background: #0d0d0e;
     }
     .phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: center bottom; display: block; }
-    .phone-frame {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-    .ep-empty {
+    .phone-frame { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .phone-empty {
       position: absolute;
       inset: 0;
       display: grid;
       place-items: center;
-      font-family: var(--font-display);
-      font-size: var(--display-sm);
-      color: #9a9a9a;
       text-align: center;
       padding: var(--space-3);
+      color: var(--text-2);
+      font-size: var(--text-xs);
     }
 
-    .ep-when {
-      display: flex;
-      align-items: baseline;
-      gap: var(--space-2);
-      padding: var(--space-2) 0;
-      border-top: var(--rule);
-      border-bottom: 1px solid var(--ink);
-      font-size: var(--text-sm);
-    }
-    .ep-tag {
-      font-family: var(--font-display);
-      font-size: var(--display-sm);
-      line-height: 1;
-      margin-right: auto;
-    }
-    .ep-when .when { color: var(--ink-2); }
-    .status { font-weight: 600; white-space: nowrap; }
-    .status.is-live { color: var(--live); }
-    .status.is-live::before {
-      content: "";
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      margin-right: 6px;
-      border-radius: 50%;
-      background: var(--live);
-      vertical-align: 1px;
-    }
-
-    .views { padding-top: var(--space-3); }
-    .views strong {
-      display: block;
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: var(--display-md);
-      line-height: 0.9;
-      font-variant-numeric: tabular-nums;
-    }
-    .views span { font-size: var(--text-sm); color: var(--ink-2); }
-
-    .stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-2) var(--space-3);
-      margin-top: var(--space-3);
-      font-size: var(--text-sm);
-    }
-    .stats div { display: flex; justify-content: space-between; gap: var(--space-2); border-bottom: 1px solid #d9d9d9; padding-bottom: 2px; }
-    .stats dt { color: var(--ink-2); }
-    .stats dd { font-weight: 600; font-variant-numeric: tabular-nums; }
-
-    .ep-note { margin-top: var(--space-3); font-size: var(--text-sm); color: var(--ink-2); }
-
-    /* ---------- plan: timeline / touchpoints / measure ---------- */
+    /* ---------- plan ---------- */
     .plan {
       display: grid;
       grid-template-columns: 1.6fr 1fr;
-      gap: var(--space-6);
-      border-top: var(--rule);
-      padding-top: var(--space-4);
+      gap: var(--space-5);
+      align-items: start;
     }
-    .plan h3 { font-size: var(--text-md); font-weight: 600; margin-bottom: var(--space-3); }
-    .plan .sub { font-size: var(--text-sm); color: var(--ink-2); margin: calc(var(--space-3) * -1 + var(--space-1)) 0 var(--space-3); }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-panel);
+    }
+    .panel h3 { font-size: var(--text-md); font-weight: 600; color: var(--text-hi); margin-bottom: var(--space-4); }
 
     .timeline { list-style: none; font-size: var(--text-sm); }
     .timeline li {
       display: grid;
-      grid-template-columns: 7.5em 1fr;
+      grid-template-columns: 16px 6.5em 1fr;
       gap: var(--space-3);
-      padding: var(--space-2) 0;
-      border-bottom: 1px solid #d9d9d9;
+      padding: var(--space-3) 0;
+      border-top: 1px solid var(--line);
+      align-items: baseline;
     }
-    .timeline time, .timeline .date { color: var(--ink-2); }
-    .timeline .phase { display: block; color: var(--ink-2); }
+    .timeline li:first-child { border-top: 0; padding-top: 0; }
+    .timeline .dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--text-2); align-self: center; }
+    .timeline .is-done .dot { background: var(--text-2); }
+    .timeline .is-now .dot { border-color: var(--red); background: var(--red); box-shadow: 0 0 0 4px var(--red-soft); }
+    .timeline .date { color: var(--text-2); font-variant-numeric: tabular-nums; }
+    .timeline .is-now .date { color: var(--red); font-weight: 600; }
+    .timeline .what { color: var(--text-hi); }
+    .timeline .phase { display: block; color: var(--text-2); font-size: var(--text-xs); }
 
-
-    .kpi strong {
-      display: block;
-      font-family: var(--font-display);
-      font-weight: 400;
-      font-size: var(--display-md);
-      line-height: 0.9;
-      margin-bottom: var(--space-2);
-    }
-    .kpi p { font-size: var(--text-sm); max-width: 32ch; }
-    .kpi p + p { margin-top: var(--space-2); color: var(--ink-2); }
+    .kpi .num { font-size: var(--num-md); color: var(--red); margin-bottom: var(--space-3); }
+    .kpi p { font-size: var(--text-sm); }
+    .kpi p + p { margin-top: var(--space-2); color: var(--text-2); }
 
     footer {
-      margin-top: var(--space-6);
-      padding-top: var(--space-3);
-      border-top: var(--rule);
+      margin-top: var(--space-7);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--line);
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
+      align-items: center;
       gap: var(--space-3);
-      font-size: var(--text-sm);
-      color: var(--ink-2);
+      font-size: var(--text-xs);
+      color: var(--text-2);
     }
+
+    /* ---------- reveal ---------- */
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity 600ms ease, transform 800ms var(--ease-spring); }
+    .reveal.is-in { opacity: 1; transform: none; }
 
     /* ---------- responsive ---------- */
     @media (min-width: 760px) {
       .page { padding: var(--space-5) var(--space-5) var(--space-6); }
-      .intro { grid-template-columns: 1.4fr 1fr; gap: var(--space-5); }
+      .intro { grid-template-columns: 1.1fr 1fr; gap: var(--space-6); align-items: end; }
+      .totals { grid-template-columns: repeat(4, 1fr); }
     }
 
     @media (max-width: 1023px) {
-      .episodes { grid-template-columns: repeat(2, 1fr); }
-      .plan { gap: var(--space-5); }
+      .chain { grid-template-columns: repeat(3, 1fr); }
+      .chain li:nth-child(3)::after { display: none; }
+      .slide { grid-template-columns: 200px 1fr; gap: var(--space-5); padding: var(--space-4); }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .upcoming { grid-template-columns: 1fr; }
+      .plan { grid-template-columns: 1fr; }
     }
 
-    @media (max-width: 759px) {
-      .chain { grid-template-columns: 1fr; }
-      .chain li, .chain li + li {
-        display: flex; align-items: baseline; gap: var(--space-3);
-        padding: var(--space-2) 0; border-left: 0;
-      }
-      .chain li + li { border-top: 1px solid var(--ink); }
-      .chain li::before { margin: 0; min-width: 1ch; }
-      .plan { grid-template-columns: 1fr; gap: var(--space-5); }
-      .masthead .updated { display: none; }
+    @media (max-width: 679px) {
+      .masthead .by > span { display: none; }
+      .chain { grid-template-columns: 1fr; gap: var(--space-2); }
+      .chain li { display: flex; align-items: baseline; gap: var(--space-3); padding: var(--space-3); }
+      .chain li::before { margin: 0; }
+      .chain li::after { display: none; }
+      .slide { grid-template-columns: 1fr; padding: var(--space-4) var(--space-3); }
+      .slide .phone { max-width: 220px; margin: 0 auto; }
+      .card { grid-template-columns: 110px 1fr; padding: var(--space-3); }
+      .panel { padding: var(--space-4) var(--space-3); }
+      .timeline li { grid-template-columns: 12px 5.5em 1fr; gap: var(--space-2); }
     }
 
-    @media (max-width: 479px) {
-      .episodes { grid-template-columns: 1fr; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .link { transition: none; }
     }
 
     @media print {
-      @page { margin: 12mm; }
-      .page { padding: 0; max-width: none; }
-      section { margin-top: var(--space-5); break-inside: avoid; }
-      .episodes { grid-template-columns: repeat(4, 1fr); }
-      .plan { grid-template-columns: 1.6fr 1fr; }
-      footer a { display: none; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body::before { display: none; }
+      .reveal { opacity: 1; transform: none; }
+      section, .slide, .card { break-inside: avoid; }
+      footer .link { display: none; }
     }
   </style>
 </head>
 <body>
   <div class="page">
     <header class="masthead">
-      <img src="img/fits-logo.png" alt="Fits From The Streets logo">
-      <p class="who">Fits From The Streets x LIDS<span>Brand campaign by 8tivLabs</span></p>
-      <p class="updated" id="updated"></p>
+      <div class="lockup">
+        <img src="img/fits-logo.png" alt="Fits From The Streets">
+        <span class="x" aria-hidden="true">x</span>
+        <img src="img/lids-logo.png" alt="Lids">
+      </div>
+      <div class="by">
+        <span>Prepared by 8tivLabs<br><span id="updated"></span></span>
+        <img src="img/8tivlabs-logo.jpg" alt="8tivLabs">
+      </div>
     </header>
 
     <div class="hero">
-      <h1>The Handoff</h1>
+      <p class="kicker">Fits From The Streets x Lids brand campaign</p>
+      <h1>The<br>Handoff</h1>
       <div class="intro">
-        <p class="lead">One cap. One continuous chain. Real people carrying real culture forward, with the cap moving from one story to the next across an eight-week run.</p>
+        <p class="lead">One cap. One continuous chain. Real people carrying real culture forward, with the cap moving from one story to the next.</p>
         <div>
           <h2>Seeding, not casting</h2>
-          <p>Subjects are seeded through the whole campaign, not batched into one shoot day. Credibility comes from real proximity to street and sports culture, not follower count. It's the same approach that worked on the Nike campaign.</p>
+          <p>Subjects are seeded through the whole eight-week run, not batched into one shoot day. Credibility comes from real proximity to street and sports culture, not follower count. It's the same approach that worked on the Nike campaign.</p>
         </div>
       </div>
     </div>
 
-    <ol class="chain" aria-label="How the Handoff works">
-      <li>Seeded</li>
-      <li>Carries it forward</li>
-      <li>Holding the cap</li>
-      <li>Passes it on</li>
-      <li>Next in line</li>
-    </ol>
+    <div class="reveal" data-reveal>
+      <div class="totals" id="totals"></div>
+      <p class="totals-note" id="totals-note"></p>
+    </div>
+
+    <section aria-labelledby="chain-title">
+      <div class="section-head">
+        <h2 id="chain-title">How the Handoff works</h2>
+      </div>
+      <ol class="chain reveal" data-reveal>
+        <li>Seeded</li>
+        <li>Carries it forward</li>
+        <li>Holding the cap</li>
+        <li>Passes it on</li>
+        <li>Next in line</li>
+      </ol>
+    </section>
 
     <section aria-labelledby="eps-title">
       <div class="section-head">
-        <h2 id="eps-title">Episodes</h2>
+        <h2 id="eps-title">Episode stats</h2>
         <p id="stats-note"></p>
       </div>
-      <div class="episodes" id="episodes"></div>
+      <div class="slides" id="slides"></div>
+      <div class="upcoming" id="upcoming"></div>
     </section>
 
-    <section class="plan" aria-label="Campaign plan">
-      <div>
-        <h3>Timeline</h3>
-        <ol class="timeline">
-          <li><time datetime="2026-09-29">Tue Sep 29</time><span>Episode 1<span class="phase">Phase 1: Fashion Week / NFL kickoff</span></span></li>
-          <li><time datetime="2026-10-06">Tue Oct 6</time><span>Episode 2<span class="phase">Phase 1: Fashion Week / NFL kickoff</span></span></li>
-          <li><time datetime="2026-10-13">Tue Oct 13</time><span>Episode 3<span class="phase">Phase 2: Sports Equinox (NBA, NFL, MLB)</span></span></li>
-          <li><time datetime="2026-10-20">Tue Oct 20</time><span>Episode 4<span class="phase">Phase 2: Sports Equinox (NBA, NFL, MLB)</span></span></li>
-          <li><span class="date">Late Oct</span><span>Handoff compilation long-form (target)</span></li>
-          <li><span class="date">Early Nov</span><span>Standalone long-form (target), closes the campaign</span></li>
-          <li><span class="date">Date TBD</span><span>In-store activation, NYC</span></li>
-        </ol>
-      </div>
-
-      <div class="kpi">
-        <h3>How we measure it</h3>
-        <strong>Impressions</strong>
-        <p>The primary KPI for every drop.</p>
-        <p>Click-through is treated as upside, not a committed metric.</p>
+    <section aria-label="Campaign plan">
+      <div class="plan">
+        <div class="panel reveal" data-reveal>
+          <h3>Timeline</h3>
+          <ol class="timeline" id="timeline"></ol>
+        </div>
+        <div class="panel kpi reveal" data-reveal>
+          <h3>How we measure it</h3>
+          <p class="num">Impressions</p>
+          <p>The primary KPI for every drop.</p>
+          <p>Click-through is treated as upside, not a committed metric.</p>
+        </div>
       </div>
     </section>
 
     <footer>
       <span>Prepared by 8tivLabs. Confidential.</span>
-      <a href="index.html">Start over</a>
+      <a class="link" href="index.html">Start over</a>
     </footer>
   </div>
 
@@ -394,29 +529,32 @@
         date: '2026-09-29',
         image: 'img/ep1.jpg',
         alt: 'Episode 1 Instagram post: subject in a black White Sox cap',
-        stats: { views: 28209, viewers: 19393, likes: 918, comments: 145, reposts: 67, shares: 67, saves: 41, avgWatch: '8 sec', follows: 0 },
+        stats: { views: 28209, viewers: 19393, likes: 918, comments: 145, reposts: 67, shares: 67, saves: 41, avgWatchSec: 8, follows: 0 },
       },
       {
         number: 2,
         date: '2026-10-06',
         image: 'img/ep2.jpg',
         alt: 'Episode 2 Instagram post: subject in a burgundy leather coat, hands on her cap',
-        stats: { views: 18915, viewers: 11961, likes: 644, comments: 156, reposts: 52, shares: 38, saves: 31, avgWatch: '6 sec', follows: 0 },
+        stats: { views: 18915, viewers: 11961, likes: 644, comments: 156, reposts: 52, shares: 38, saves: 31, avgWatchSec: 6, follows: 0 },
       },
-      {
-        number: 3,
-        date: '2026-10-13',
-        image: 'img/ep3.jpg',
-        alt: 'Episode 3 subject in a blue 76ers cap',
-        stats: null,
-      },
-      {
-        number: 4,
-        date: '2026-10-20',
-        image: null,
-        alt: '',
-        stats: null,
-      },
+      { number: 3, date: '2026-10-13', image: 'img/ep3.jpg', alt: 'Episode 3 subject in a blue 76ers cap', stats: null },
+      { number: 4, date: '2026-10-20', image: null, alt: '', stats: null },
+    ];
+
+    const TIMELINE = [
+      { date: '2026-09-29', what: 'Episode 1', phase: 'Phase 1: Fashion Week / NFL kickoff' },
+      { date: '2026-10-06', what: 'Episode 2', phase: 'Phase 1: Fashion Week / NFL kickoff' },
+      { date: '2026-10-13', what: 'Episode 3', phase: 'Phase 2: Sports Equinox (NBA, NFL, MLB)' },
+      { date: '2026-10-20', what: 'Episode 4', phase: 'Phase 2: Sports Equinox (NBA, NFL, MLB)' },
+      { label: 'Late Oct', what: 'Handoff compilation long-form (target)' },
+      { label: 'Early Nov', what: 'Standalone long-form (target), closes the campaign' },
+      { label: 'Date TBD', what: 'In-store activation, NYC' },
+    ];
+
+    const STAT_LABELS = [
+      ['likes', 'Likes'], ['comments', 'Comments'], ['reposts', 'Reposts'], ['shares', 'Shares'],
+      ['saves', 'Saves'], ['avgWatchSec', 'Avg. watch', ' sec'], ['follows', 'Follows'],
     ];
 
     const fmt = new Intl.NumberFormat('en-US');
@@ -424,39 +562,106 @@
     const short = (iso) => toDate(iso).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).replace(',', '');
     const long = (iso) => toDate(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
     const today = new Date(); today.setHours(0, 0, 0, 0);
+    const isOut = (iso) => toDate(iso) <= today;
 
-    document.getElementById('updated').textContent = `Stats updated ${long(STATS_UPDATED)}`;
-    document.getElementById('stats-note').textContent = `Instagram, so far. Last updated ${long(STATS_UPDATED)}.`;
+    // a number that counts up when it scrolls into view
+    const count = (value, suffix = '') =>
+      `<span class="num" data-count="${value}" data-suffix="${esc(suffix)}">${fmt.format(value)}${esc(suffix)}</span>`;
 
-    const LABELS = [
-      ['likes', 'Likes'], ['comments', 'Comments'], ['reposts', 'Reposts'], ['shares', 'Shares'],
-      ['saves', 'Saves'], ['avgWatch', 'Avg. watch'], ['follows', 'Follows'],
-    ];
+    const phone = (ep) => `
+      <div class="phone">
+        <div class="phone-screen">${ep.image
+          ? `<img src="${esc(ep.image)}" alt="${esc(ep.alt)}" loading="lazy">`
+          : `<div class="phone-empty">Still coming</div>`}</div>
+        <img class="phone-frame" src="img/iphone-frame.png" alt="">
+      </div>`;
 
-    document.getElementById('episodes').innerHTML = EPISODES.map((ep) => {
-      const out = toDate(ep.date) <= today;
-      const media = ep.image
-        ? `<img src="${esc(ep.image)}" alt="${esc(ep.alt)}" loading="lazy">`
-        : `<div class="ep-empty">Still coming</div>`;
+    const meta = (ep) => `
+      <div class="slide-meta">
+        <h3>Episode ${ep.number}</h3>
+        <span>${short(ep.date)}</span>
+        <span class="chip${isOut(ep.date) ? ' is-live' : ''}">${isOut(ep.date) ? 'Out now' : 'Coming up'}</span>
+      </div>`;
 
-      const body = ep.stats
-        ? `<p class="views"><strong>${fmt.format(ep.stats.views)}</strong><span>views from ${fmt.format(ep.stats.viewers)} viewers</span></p>
-           <dl class="stats">${LABELS.map(([k, label]) =>
-             `<div><dt>${label}</dt><dd>${typeof ep.stats[k] === 'number' ? fmt.format(ep.stats[k]) : esc(ep.stats[k] ?? '–')}</dd></div>`
-           ).join('')}</dl>`
-        : `<p class="ep-note">${out ? 'Stats arrive with the next update.' : `Stats start after launch on ${short(ep.date)}.`}</p>`;
+    document.getElementById('updated').textContent = `Stats as of ${long(STATS_UPDATED)}`;
+    document.getElementById('stats-note').textContent = `Instagram, so far. Pulled ${long(STATS_UPDATED)}.`;
 
-      return `<article class="ep" aria-label="Episode ${ep.number}">
-        <div class="phone">
-          <div class="phone-screen">${media}</div>
-          <img class="phone-frame" src="img/iphone-frame.png" alt="">
+    // campaign totals across every episode that has stats
+    const withStats = EPISODES.filter((ep) => ep.stats);
+    const sum = (key) => withStats.reduce((n, ep) => n + ep.stats[key], 0);
+    document.getElementById('totals').innerHTML = [
+      ['views', 'Total views'], ['likes', 'Likes'], ['comments', 'Comments'], ['shares', 'Shares'],
+    ].map(([k, label]) => `<div>${count(sum(k))}<p class="label">${label}</p></div>`).join('');
+    document.getElementById('totals-note').textContent =
+      `Instagram totals across ${withStats.length} episode${withStats.length === 1 ? '' : 's'}, as of ${long(STATS_UPDATED)}.`;
+
+    document.getElementById('slides').innerHTML = withStats.map((ep) => `
+      <article class="slide reveal" data-reveal aria-label="Episode ${ep.number}">
+        ${phone(ep)}
+        <div>
+          ${meta(ep)}
+          <div class="views">
+            ${count(ep.stats.views)}
+            <p class="label">views from <strong>${fmt.format(ep.stats.viewers)}</strong> viewers</p>
+          </div>
+          <div class="bar" aria-hidden="true"></div>
+          <dl class="stat-grid">${STAT_LABELS.map(([k, label, suffix]) =>
+            `<div><dt>${label}</dt><dd>${count(ep.stats[k] ?? 0, suffix)}</dd></div>`).join('')}</dl>
         </div>
-        <p class="ep-when"><span class="ep-tag">EP ${ep.number}</span><span class="when">${short(ep.date)}</span><span class="status${out ? ' is-live' : ''}">${out ? 'Out now' : 'Coming up'}</span></p>
-        ${body}
-      </article>`;
+      </article>`).join('');
+
+    const upcoming = document.getElementById('upcoming');
+    upcoming.innerHTML = EPISODES.filter((ep) => !ep.stats).map((ep) => `
+      <article class="card reveal" data-reveal aria-label="Episode ${ep.number}">
+        ${phone(ep)}
+        <div>
+          ${meta(ep)}
+          <p>${isOut(ep.date) ? 'Stats arrive with the next update.' : `Stats start after launch on ${short(ep.date)}.`}</p>
+        </div>
+      </article>`).join('');
+    if (withStats.length && upcoming.children.length) upcoming.style.marginTop = 'var(--space-5)';
+
+    // timeline: past items filled in, the latest one marked in red
+    const current = TIMELINE.filter((t) => t.date && isOut(t.date)).pop();
+    document.getElementById('timeline').innerHTML = TIMELINE.map((t) => {
+      const state = !t.date ? '' : t === current ? 'is-now' : isOut(t.date) ? 'is-done' : '';
+      return `<li class="${state}"><span class="dot" aria-hidden="true"></span>
+        <span class="date">${t.date ? short(t.date) : esc(t.label)}</span>
+        <span class="what">${esc(t.what)}${t.phase ? `<span class="phase">${esc(t.phase)}</span>` : ''}</span></li>`;
     }).join('');
+
+    // ---------- motion: reveal panels and count numbers up on scroll ----------
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const easeOut = (t) => 1 - Math.pow(1 - t, 4);
+
+    function runCount(el) {
+      const target = Number(el.dataset.count);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1400 + String(target).length * 80;
+      const start = performance.now();
+      const frame = (now) => {
+        const t = Math.min((now - start) / duration, 1);
+        el.textContent = fmt.format(Math.round(target * easeOut(t))) + suffix;
+        if (t < 1) requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+    }
+
+    if (!reduceMotion && 'IntersectionObserver' in window) {
+      document.querySelectorAll('[data-count]').forEach((el) => { el.textContent = '0' + (el.dataset.suffix || ''); });
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-in');
+          entry.target.querySelectorAll('[data-count]').forEach(runCount);
+          io.unobserve(entry.target);
+        });
+      }, { threshold: 0.25 });
+      document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+    } else {
+      document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-in'));
+    }
   </script>
 </body>
 </html>

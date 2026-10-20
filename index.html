@@ -30,11 +30,11 @@
 
     main { text-align: center; }
 
-    .org {
-      font-size: clamp(1.125rem, 3vw, 1.5rem);
-      color: var(--ink-dim);
-      letter-spacing: 0.06em;
-      line-height: 1;
+    .logo {
+      display: block;
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
     }
 
     h1 {
@@ -76,32 +76,17 @@
 
     .terminal:not(:focus-within) .prompt-line .cursor { animation: none; opacity: 0.3; }
 
-    .next {
-      display: inline-block;
-      margin-top: 0.4em;
-      padding: 0 0.3em;
-      color: var(--ink);
-      text-decoration: underline;
-      text-underline-offset: 0.15em;
-      opacity: 0;
-      transition: opacity 300ms ease-out;
-    }
-    .next.is-shown { opacity: 1; }
-    .next:hover { background: var(--ink); color: var(--paper); text-decoration: none; }
-    .next:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-    .next:active { opacity: 0.6; }
 
     @keyframes blink { 50% { opacity: 0; } }
 
     @media (prefers-reduced-motion: reduce) {
       .cursor { animation: none; }
-      .next { transition: none; }
     }
   </style>
 </head>
 <body>
   <main>
-    <p class="org">8tivlabs</p>
+    <img class="logo" src="img/8tivlabs-logo.jpg" alt="8tivLabs" width="48" height="48">
     <h1>LIDS</h1>
 
     <form class="terminal" id="term" autocomplete="off">
@@ -110,7 +95,6 @@
         <p><span id="prompt">Your name?</span> <span class="typed" id="typed"></span><span class="cursor" aria-hidden="true"></span></p>
       </label>
       <input id="field" name="name" type="text" maxlength="40" spellcheck="false" autocapitalize="words" autocomplete="off" autofocus>
-      <a class="next" id="next" href="onesheet.html" hidden>View the campaign one-sheet</a>
     </form>
   </main>
 
@@ -121,7 +105,6 @@
     const promptLine = document.getElementById('prompt-line');
     const promptText = document.getElementById('prompt');
     const typed = document.getElementById('typed');
-    const next = document.getElementById('next');
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const PROMPTS = { name: 'Your name?', password: 'Password?' };
@@ -131,7 +114,7 @@
     const mask = (value) => '*'.repeat(value.length);
     const echo = () => { typed.textContent = step === 'password' ? mask(input.value) : input.value; };
 
-    form.addEventListener('click', (e) => { if (e.target !== next && !input.disabled) input.focus(); });
+    form.addEventListener('click', (e) => { if (!input.disabled) input.focus(); });
     input.addEventListener('input', echo);
 
     function ask(nextStep) {
@@ -173,11 +156,8 @@
       setTimeout(tick, 350);
     }
 
-    function showNext() {
-      next.hidden = false;
-      requestAnimationFrame(() => next.classList.add('is-shown'));
-      next.focus({ preventScroll: true }); // Enter now opens the one-sheet
-    }
+    // give people a beat to read the reply, then open the one-sheet
+    const openOneSheet = () => setTimeout(() => { location.href = 'onesheet.html'; }, 2000);
 
     async function checkPassword(password) {
       try {
@@ -212,7 +192,7 @@
       const result = await checkPassword(value);
 
       if (result === 'ok') {
-        typeOut(`Thank you, ${name}. Here is the latest on the LIDS campaign.`, showNext);
+        typeOut(`Thank you, ${name}. Here is the latest on the LIDS campaign.`, openOneSheet);
       } else if (result === 'wrong') {
         typeOut('Wrong password. Try again.', () => ask('password'));
       } else {
