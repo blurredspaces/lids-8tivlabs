@@ -60,7 +60,7 @@ Splash (`index.html`): `--paper` #ffffff, `--ink` #000000. Type is the Mac OS X 
 Edit the data block near the bottom of `onesheet.html`:
 - `STATS_UPDATED` is the date of the latest Instagram views, likes and comments, `INSIGHTS_UPDATED` is the date of the detailed Insights numbers, and `YOUTUBE_UPDATED` is the date of the @lids YouTube Shorts views. Every "as of" label reads from these.
 - `stats: { views, likes, comments }` holds the latest Instagram numbers. Views can be exact (`28209`) or rounded the way Instagram shows them (`'21.2K'`). Rounded values display and total in K format, and if any episode is rounded, the Instagram views total is shown rounded too.
-- `insights: { viewers, reposts, shares, saves, avgWatchSec, follows }` comes from Instagram Insights. Leave out any you don't have, or set the whole thing to `null`. A note under the grid gives its date.
+- `insights: { viewers, reposts, shares, saves, avgWatchSec, follows }` comes from Instagram Insights. Leave out any you don't have, or set the whole thing to `null`. When `INSIGHTS_UPDATED` differs from `STATS_UPDATED`, a note under the grid gives the Insights date.
 - `youtube: { views }` is the @lids YouTube Shorts count. Use `null` until the Short is live.
 - `title` is the YouTube Shorts title without the "The Handoff Ep. N" part.
 - `instagram` is the post URL. It shows a "View on Instagram" pill that opens in a new tab.
