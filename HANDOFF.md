@@ -41,7 +41,7 @@ One-sheet (`onesheet.html`):
 | `--radius-lg` / `-md` / `-sm` | 20 / 12 / 8px | Panels / steps and stat cells / small images |
 | `--shadow-panel` | inset top highlight + 2 soft black shadows | Every panel |
 
-Splash (`index.html`): `--paper` #ffffff, `--ink` #000000, VT323.
+Splash (`index.html`): `--paper` #ffffff, `--ink` #000000. Type is the Mac OS X Aqua-era system font: `"Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif`. It uses no web font, so Macs show Lucida Grande and Windows shows Lucida Sans Unicode. "LIDS" is 700 weight, clamp(40–60px). The prompt text is clamp(15–18px). The cursor is a thin 1.5px text caret.
 
 ## Components
 | Component | Notes |
@@ -73,7 +73,7 @@ Edit the data block near the bottom of `onesheet.html`:
 |---|---|---|
 | Prompt cursor | Focused | Blinks, 1.1s `steps(1)` |
 | Prompt cursor | Not focused | Static at 30% opacity, which tells the visitor to click to type. Clicking anywhere in the form focuses the input. |
-| Password | Typing | Each character shows as `*`. A wrong password prints "Wrong password. Try again." and asks again. A network or server error prints "Can't check the password right now. Try again in a moment." |
+| Password | Typing | Each character shows as `•`, as Mac OS X did. A wrong password prints "Wrong password. Try again." and asks again. A network or server error prints "Can't check the password right now. Try again in a moment." |
 | Reply | Correct password | Types 1 character every 38ms after a 350ms delay. Then, after 2 seconds, the browser goes to `onesheet.html`. |
 | "Start over" link | Hover / focus-visible / active | Lifts 1px and brightens / 2px red outline / presses down 1px at 70% opacity |
 
@@ -89,7 +89,7 @@ Edit the data block near the bottom of `onesheet.html`:
 ## Edge cases
 - **Long names:** capped at 40 characters, and the text wraps anywhere (`overflow-wrap: anywhere`).
 - **Missing image or stats:** handled through the `null` values above. An undefined individual stat renders as 0.
-- **Fonts slow or blocked:** fall back to Courier New (splash), Arial Narrow (numbers) and system sans. `display=swap` avoids invisible text while fonts load.
+- **Fonts slow or blocked:** the splash uses only installed fonts (Lucida Grande, then Lucida Sans Unicode, Geneva or Verdana). The one-sheet falls back to Arial Narrow (numbers) and system sans. `display=swap` avoids invisible text while fonts load.
 - **No JavaScript:** the one-sheet's totals, episodes and timeline will be empty, and the splash can't submit.
 
 ## Animation / motion
