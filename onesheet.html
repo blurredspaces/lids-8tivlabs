@@ -660,7 +660,9 @@
       Update stats here. Dates are YYYY-MM-DD.
       - `stats` holds the latest Instagram views, likes and comments. Views can be
         exact (28209) or rounded the way Instagram shows them ('21.2K').
-      - `insights` holds the detailed Instagram Insights numbers. Leave out any you don't have.
+      - `insights` holds the detailed Instagram Insights numbers. Leave out any you don't have,
+        including likes in `stats`.
+      - `asOf` on an episode overrides the dates below when its numbers were pulled on another day.
       - Leave `stats` as null until an episode has numbers, and `image` as null until there is a still.
     */
     const STATS_UPDATED = '2026-10-20';     // Instagram views, likes, comments
@@ -702,13 +704,15 @@
       },
       {
         number: 4,
-        title: null,
+        title: 'Like Father, Like Fit',
         date: '2026-10-20',
+        instagram: 'https://www.instagram.com/reel/DevCrPsh7he/',
         image: 'img/ep4.jpg',
         alt: 'Episode 4 subject, a child in a red Cardinals World Series champions cap, at a ballfield fence',
         video: { url: 'https://vimeo.com/1237685752/287f2ad059', label: 'Watch and download the final cut' },
-        stats: null,
-        insights: null,
+        asOf: '2026-10-22', // newer than STATS_UPDATED; leave out when an episode matches it
+        stats: { views: '14.4K', comments: 93 }, // likes not reported yet
+        insights: { reposts: 90, shares: 77 },
         youtube: null,
       },
     ];
@@ -795,6 +799,7 @@
 
     // campaign totals across every episode that has stats
     const withStats = EPISODES.filter((ep) => ep.stats);
+    const withLikes = withStats.filter((ep) => ep.stats.likes != null);
     const withYouTube = EPISODES.filter((ep) => ep.youtube);
     const total = (list) => list.reduce((acc, v) => {
       const { value, rounded } = parseCount(v);
@@ -806,11 +811,16 @@
     document.getElementById('totals').innerHTML = [
       [total(withStats.map((ep) => ep.stats.views)), 'Instagram views'],
       [total(withYouTube.map((ep) => ep.youtube.views)), 'YouTube Shorts views on @lids'],
-      [total(withStats.map((ep) => ep.stats.likes)), 'Instagram likes'],
+      [total(withLikes.map((ep) => ep.stats.likes)), 'Instagram likes'],
       [total(withStats.map((ep) => ep.stats.comments)), 'Instagram comments'],
     ].map(([t, label]) => `<div>${count(asInput(t))}<p class="label">${label}</p></div>`).join('');
+    const later = withStats.filter((ep) => ep.asOf && ep.asOf !== STATS_UPDATED)
+      .map((ep) => `Episode ${ep.number} as of ${brief(ep.asOf)}`);
+    const noLikes = withStats.filter((ep) => ep.stats.likes == null).map((ep) => `Episode ${ep.number}`);
     document.getElementById('totals-note').textContent =
-      `Instagram across ${plural(withStats.length)} and YouTube Shorts across ${plural(withYouTube.length)}, as of ${long(STATS_UPDATED)}.`;
+      `Instagram across ${plural(withStats.length)} and YouTube Shorts across ${plural(withYouTube.length)}, as of ${long(STATS_UPDATED)}` +
+      (later.length ? ` (${later.join(', ')})` : '') + '.' +
+      (noLikes.length ? ` Likes don't include ${noLikes.join(' or ')}.` : '');
 
     document.getElementById('slides').innerHTML = withStats.map((ep) => {
       const insights = ep.insights
@@ -826,8 +836,9 @@
             <p class="label">Instagram views</p>
           </div>
           <div class="bar" aria-hidden="true"></div>
-          <dl class="stat-grid">${cell('Likes', ep.stats.likes)}${cell('Comments', ep.stats.comments)}${insights}</dl>
-          ${insights && INSIGHTS_UPDATED !== STATS_UPDATED ? `<p class="grid-note">Viewers, reposts, shares, saves, watch time and follows are from Instagram Insights on ${brief(INSIGHTS_UPDATED)}.</p>` : ''}
+          <dl class="stat-grid">${ep.stats.likes != null ? cell('Likes', ep.stats.likes) : ''}${cell('Comments', ep.stats.comments)}${insights}</dl>
+          ${ep.asOf && ep.asOf !== STATS_UPDATED ? `<p class="grid-note">Episode ${ep.number} numbers are as of ${brief(ep.asOf)}.</p>` : ''}
+          ${insights && !ep.asOf && INSIGHTS_UPDATED !== STATS_UPDATED ? `<p class="grid-note">Viewers, reposts, shares, saves, watch time and follows are from Instagram Insights on ${brief(INSIGHTS_UPDATED)}.</p>` : ''}
           ${youtube(ep)}
           ${video(ep)}
         </div>

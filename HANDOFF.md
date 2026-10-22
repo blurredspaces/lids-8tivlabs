@@ -64,6 +64,8 @@ Edit the data block near the bottom of `onesheet.html`:
 - `insights: { viewers, reposts, shares, saves, avgWatchSec, follows }` comes from Instagram Insights. Leave out any you don't have, or set the whole thing to `null`. When `INSIGHTS_UPDATED` differs from `STATS_UPDATED`, a note under the grid gives the Insights date.
 - `youtube: { views }` is the @lids YouTube Shorts count. Use `null` until the Short is live.
 - `title` is the YouTube Shorts title without the "The Handoff Ep. N" part.
+- `asOf` on an episode gives that episode's numbers their own date, for when they were pulled on a different day. The slide and the totals note both say so.
+- `stats.likes` can be left out. That episode then has no likes cell, and the totals note says its likes aren't counted.
 - `video: { url, label }` adds a red button that opens the video in a new tab. Episode 4 uses it for the final cut on Vimeo.
 - `instagram` is the post URL. It shows a "View on Instagram" pill that opens in a new tab.
 - An episode with `stats` gets a full slide and counts toward the totals. One with `stats: null` shows as an upcoming card.
