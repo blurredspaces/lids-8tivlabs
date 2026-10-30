@@ -54,7 +54,7 @@ Sign-in (`index.html`): `--paper` #ffffff, `--ink` #000000, `--ink-dim` #6b6b6b,
 | Upcoming card | For episodes without stats: a small phone, a status line and, when available, the YouTube strip. |
 | Phone mockup | The frame is 1506×3102. Its transparent screen spans x 44–1466 and y 32–3069, inset as `left 2.92% / right 2.66% / top 1.03% / bottom 1.06%`, with `border-radius: 15% / 7.2%`. Screen images use `object-fit: cover` anchored to the bottom. |
 | Status chip | Computed from each episode's `date` against the viewer's local date: "Out now" (red) on or after the date, otherwise "Coming up". |
-| Long-form YouTube | The last section before the footer. Two cards ("Lids Hand Off" and "Fits From The Streets x LIDS: NYC Pull Up"), each with a red top edge, YouTube icon, "In development" chip and "Delivery TBD". It's static HTML, so edit the cards directly when dates are set, and update the matching `TIMELINE` rows. |
+| Long-form YouTube | The last section before the footer. Two cards ("Lids Hand Off" and "Fits From The Streets x LIDS: NYC Pull Up"), each with a red top edge, YouTube icon, "In development" chip and a delivery date ("Week of Nov 2" for Lids Hand Off, "TBD" for NYC Pull Up). It's static HTML, so edit the cards directly when dates are set, and update the matching `TIMELINE` rows. |
 | Timeline | Built from the `TIMELINE` array. The latest dated item that has already happened is red, earlier ones are filled gray, and later ones are hollow. |
 
 ## Updating stats
