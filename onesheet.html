@@ -197,49 +197,6 @@
     }
     .section-head p { color: var(--text-2); margin-top: var(--space-2); max-width: 60ch; }
 
-    /* ---------- chain ---------- */
-    .chain {
-      list-style: none;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: var(--space-3);
-      counter-reset: step;
-      position: relative;
-    }
-    .chain li {
-      counter-increment: step;
-      position: relative;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      padding: var(--space-4) var(--space-3) var(--space-3);
-      font-weight: 500;
-      color: var(--text-hi);
-      line-height: 1.35;
-      box-shadow: var(--shadow-panel);
-    }
-    .chain li::before {
-      content: counter(step, decimal-leading-zero);
-      display: block;
-      font-family: var(--font-display);
-      font-stretch: 70%;
-      font-weight: 800;
-      font-size: var(--num-sm);
-      line-height: 1;
-      color: var(--red);
-      margin-bottom: var(--space-3);
-    }
-    /* connector to the next step */
-    .chain li:not(:last-child)::after {
-      content: "";
-      position: absolute;
-      top: 40px;
-      right: calc(var(--space-3) * -1 - 1px);
-      width: calc(var(--space-3) + 2px);
-      height: 2px;
-      background: var(--red);
-    }
-
     /* ---------- episode slides ---------- */
     .slides { display: grid; gap: var(--space-5); }
     .slide {
@@ -515,8 +472,6 @@
     }
 
     @media (max-width: 1023px) {
-      .chain { grid-template-columns: repeat(3, 1fr); }
-      .chain li:nth-child(3)::after { display: none; }
       .slide { grid-template-columns: 200px 1fr; gap: var(--space-5); padding: var(--space-4); }
       .stat-grid { grid-template-columns: repeat(2, 1fr); }
       .upcoming { grid-template-columns: 1fr; }
@@ -527,10 +482,6 @@
       .longform { grid-template-columns: 1fr; gap: var(--space-4); }
       .lf { padding: var(--space-4) var(--space-3); }
       .masthead .by > span { display: none; }
-      .chain { grid-template-columns: 1fr; gap: var(--space-2); }
-      .chain li { display: flex; align-items: baseline; gap: var(--space-3); padding: var(--space-3); }
-      .chain li::before { margin: 0; }
-      .chain li::after { display: none; }
       .slide { grid-template-columns: 1fr; padding: var(--space-4) var(--space-3); }
       .slide .phone { max-width: 220px; margin: 0 auto; }
       .card { grid-template-columns: 110px 1fr; padding: var(--space-3); }
@@ -586,19 +537,6 @@
       <div class="totals" id="totals"></div>
       <p class="totals-note" id="totals-note"></p>
     </div>
-
-    <section aria-labelledby="chain-title">
-      <div class="section-head">
-        <h2 id="chain-title">How the Handoff works</h2>
-      </div>
-      <ol class="chain reveal" data-reveal>
-        <li>Seeded</li>
-        <li>Carries it forward</li>
-        <li>Holding the cap</li>
-        <li>Passes it on</li>
-        <li>Next in line</li>
-      </ol>
-    </section>
 
     <section aria-labelledby="eps-title">
       <div class="section-head">

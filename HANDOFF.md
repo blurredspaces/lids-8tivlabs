@@ -19,7 +19,7 @@ The source images live in `graphics/`, which is git-ignored. The web-sized copie
 ## Layout
 - The sign-in page is black on white: a centered 340px column with the logo, LIDS, the transcript, then the form.
 - The one-sheet's max content width is `--page-max` (1180px), centered. Side gutters are `--space-3` (16px) on mobile and `--space-5` (40px) from 760px up.
-- One-sheet order: masthead (Fits x Lids lockup, "Prepared by 8tivLabs"), hero (title + intro), campaign totals band, five-step chain, episode stat slides, upcoming-episode cards, plan row (Timeline + How we measure it), Long-form YouTube, footer.
+- One-sheet order: masthead (Fits x Lids lockup, "Prepared by 8tivLabs"), hero (title + intro), campaign totals band, episode stat slides, upcoming-episode cards, plan row (Timeline + How we measure it), Long-form YouTube, footer.
 - Depth has three layers: `--bg` for the page, `--surface` for panels and `--surface-2` for chips and stat cells.
 
 ## Design tokens
@@ -28,7 +28,7 @@ One-sheet (`onesheet.html`):
 | Token | Value | Usage |
 |---|---|---|
 | `--bg` | #1b1c1e | Page base, with a faint red radial glow top-right and film grain |
-| `--surface` | #232427 | Panels: totals, chain steps, slides, cards, timeline |
+| `--surface` | #232427 | Panels: totals, slides, cards, timeline |
 | `--surface-2` | #2c2d31 | Stat cells and chips |
 | `--line` | rgba(255,255,255,.09) | Borders and dividers |
 | `--text` / `--text-hi` / `--text-2` | #dcdcde / #f4f4f5 / #8d8e94 | Body / numbers and titles / labels |
@@ -48,7 +48,6 @@ Sign-in (`index.html`): `--paper` #ffffff, `--ink` #000000, `--ink-dim` #6b6b6b,
 |---|---|
 | Sign-in form (`index.html`) | A "Step 1 of 2" / "Step 2 of 2" line, a bold label, one visible text field with placeholder text ("Type your name", then "Type the password"), an error line (`role=alert`) and a full-width black button ("Next", then "Sign in"). The same field switches from name to password, so it keeps focus and the phone keyboard stays open. The buttons cancel `mousedown` so tapping them doesn't take focus. While the password is being checked, the field is `readOnly` (never `disabled`) and the button reads "Checking…". The password step has a Show/Hide toggle inside the field. |
 | Totals band | Sits under the "All engagement is organic" chip. Shows Instagram views (red), YouTube Shorts views on @lids, Instagram likes and Instagram comments, each summed across the episodes that have numbers. The note under it says how many episodes each platform covers and when the numbers were pulled. |
-| Chain | An `<ol>` of 5 step cards numbered 01–05 in red, joined by red connectors. Numbering is used because the steps really are a sequence. |
 | Episode slide | For episodes that have Instagram stats. A phone mockup on the left. On the right: episode number, date, status chip and title, then Instagram views (`--num-xl`), a red bar, a 4-column grid with likes and comments followed by any Insights numbers, a dated note for the Insights, and the YouTube strip. |
 | YouTube strip | A red-edged row with a play icon, "YouTube Shorts on the @lids channel" and the view count, which counts up. Shown on slides and upcoming cards for any episode with `youtube` data. |
 | Upcoming card | For episodes without stats: a small phone, a status line and, when available, the YouTube strip. |
@@ -84,10 +83,10 @@ Edit the data block near the bottom of `onesheet.html`:
 ## Responsive behavior
 | Breakpoint | Changes |
 |---|---|
-| ≥1024px | Chain has 5 columns. Each slide is phone (200–280px) next to stats, with 4 stat columns. Upcoming cards sit side by side. Plan row is 1.6fr / 1fr. |
-| 760–1023px | Chain has 3 columns. Slides use a 200px phone and 2 stat columns. Upcoming cards and the plan stack. |
+| ≥1024px | Each slide is phone (200–280px) next to stats, with 4 stat columns. Upcoming cards sit side by side. Plan row is 1.6fr / 1fr. |
+| 760–1023px | Slides use a 200px phone and 2 stat columns. Upcoming cards and the plan stack. |
 | <760px | Totals become a 2×2 grid. |
-| <680px | Chain stacks into rows. Slides stack with the phone (max 220px) above the stats. The "Prepared by" text is hidden, leaving the 8tivLabs logo. |
+| <680px | Slides stack with the phone (max 220px) above the stats. The "Prepared by" text is hidden, leaving the 8tivLabs logo. |
 | Print | Grain removed, colors kept (`print-color-adjust: exact`), panels avoid page breaks, numbers print at their final values |
 
 ## Edge cases
@@ -109,7 +108,7 @@ Only `opacity` and `transform` are animated. With `prefers-reduced-motion: reduc
 ## Accessibility
 - Sign-in focus order: the field (autofocused on desktop, since phones ignore autofocus), then Show/Hide on the password step, then the button. The field keeps focus across both steps.
 - The field has a visible `<label>` that changes with the step, and it references the error line with `aria-describedby`. The error line is `role="alert"`, the transcript and reply are `aria-live="polite"`, and Show/Hide sets `aria-pressed`.
-- On the one-sheet, the chain has `aria-label="How the Handoff works"`, each episode is an `<article>` with `aria-label="Episode N"`, and the phone frame image has `alt=""` (decorative) while each screen image has descriptive alt text.
+- On the one-sheet, each episode is an `<article>` with `aria-label="Episode N"`, and the phone frame image has `alt=""` (decorative) while each screen image has descriptive alt text.
 - Contrast: on the splash, black on white is 21:1. On the one-sheet, #dcdcde on #1b1c1e is about 13:1, and the #8d8e94 labels on #232427 panels are about 4.7:1, which passes AA.
 - The count-up text changes as the animation runs, but none of it is inside a live region, so screen readers aren't flooded.
 
