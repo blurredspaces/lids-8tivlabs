@@ -1,10 +1,14 @@
-# Handoff Spec: LIDS splash + The Handoff one-sheet
+# Handoff Spec: LIDS splash, The Handoff one-sheet and /campaign case study
 
 ## Overview
-Two static pages, no build step.
+Static pages, no build step.
 
 - **`index.html` (sign-in).** Two steps in one visible, labeled field: "Your name" with a Next button, then "Password" with a Sign in button. Each entry is printed above the form like a terminal transcript. When the password is correct, it types back a thank-you, waits 2 seconds and opens the one-sheet. The name is only displayed on screen. It is never stored or sent anywhere.
 - **`onesheet.html` (one-sheet).** A single-page summary of the Fits From The Streets x LIDS campaign, *The Handoff*: concept, campaign totals, mechanic, per-episode Instagram stats, timeline and the KPI. It uses a dark graphite theme with 8tivLabs red accents, and its numbers count up as they scroll into view. Content comes from `Lids-Fits_8tivLabs-Updated.pdf` (updated 10.13.26).
+
+- **`campaign.html` (case study, at `/campaign`).** For other brands. It has the one-sheet's design and leads with the problem Lids wanted solved. Order: masthead, problem hero, The Handoff approach, results so far (totals), episode by episode, Building the YouTube page (long-form cards), plan row, footer. Each episode shows views, likes, comments, viewers, reposts and shares, plus the YouTube Shorts strip. Saves, watch time and follows are left out on purpose. It doesn't link to the one-sheet.
+- **`campaign-signin.html` (case study sign-in).** One password field in the sign-in page's white style. It appears at `/campaign` until the visitor signs in.
+- **`data/stats.js` (shared numbers).** Stats, dates and the timeline for both the one-sheet and the case study. Update numbers here only.
 
 The source images live in `graphics/`, which is git-ignored. The web-sized copies the pages use are in `img/`.
 
@@ -15,6 +19,10 @@ The source images live in `graphics/`, which is git-ignored. The web-sized copie
 - The cookie stores a SHA-256 hash of the password, not the password itself. Changing `ADMIN_PASSWORD` signs everyone out.
 - There is no lockout after repeated wrong guesses, so use a long password.
 - Edge functions don't run on a plain local server, so `/api/login` fails there and the splash shows "Can't check the password right now." Use `netlify dev` to test the real flow locally.
+
+- The case study has its own password, the `CAMPAIGN_PASSWORD` environment variable in Netlify. `netlify/edge-functions/campaign-login.ts` handles `POST /api/campaign-login` and sets its own cookie (`lids_campaign`, 7 days). `netlify/edge-functions/campaign-guard.ts` protects `/campaign` and `/campaign.html`, showing `campaign-signin.html` at the same address until the cookie is valid.
+- `guard.ts` also protects `/data/*`. The `lids_campaign` cookie opens `/img/ep*` and `/data/*` only, so case study visitors can't reach the one-sheet or this spec. The one-sheet cookie doesn't open `/campaign`.
+- If `CAMPAIGN_PASSWORD` isn't set, `/campaign` stays locked and its sign-in shows "Couldn't check the password. Try again in a moment."
 
 ## Layout
 - The sign-in page is black on white: a centered 340px column with the logo, LIDS, the transcript, then the form.
@@ -53,11 +61,11 @@ Sign-in (`index.html`): `--paper` #ffffff, `--ink` #000000, `--ink-dim` #6b6b6b,
 | Upcoming card | For episodes without stats: a small phone, a status line and, when available, the YouTube strip. |
 | Phone mockup | The frame is 1506×3102. Its transparent screen spans x 44–1466 and y 32–3069, inset as `left 2.92% / right 2.66% / top 1.03% / bottom 1.06%`, with `border-radius: 15% / 7.2%`. Screen images use `object-fit: cover` anchored to the bottom. |
 | Status chip | Computed from each episode's `date` against the viewer's local date: "Out now" (red) on or after the date, otherwise "Coming up". |
-| Long-form YouTube | The last section before the footer. Two cards ("Lids Hand Off" and "Fits From The Streets x LIDS: NYC Pull Up"), each with a red top edge, YouTube icon, "In development" chip and a delivery date ("Week of Nov 2" for Lids Hand Off, "TBD" for NYC Pull Up). It's static HTML, so edit the cards directly when dates are set, and update the matching `TIMELINE` rows. |
+| Long-form YouTube | The last section before the footer. Two cards ("Lids Hand Off" and "Fits From The Streets x LIDS: NYC Pull Up"), each with a red top edge, YouTube icon, "In development" chip and a delivery date ("Week of Nov 2" for Lids Hand Off, "TBD" for NYC Pull Up). It's static HTML, so edit the cards in both `onesheet.html` and `campaign.html` when dates are set, along with the section text on each page and the matching `TIMELINE` rows in `data/stats.js`. |
 | Timeline | Built from the `TIMELINE` array. The latest dated item that has already happened is red, earlier ones are filled gray, and later ones are hollow. |
 
 ## Updating stats
-Edit the data block near the bottom of `onesheet.html`:
+Edit `data/stats.js`. Both the one-sheet and the case study read it:
 - `STATS_UPDATED` is the date of the latest Instagram views, likes and comments, `INSIGHTS_UPDATED` is the date of the detailed Insights numbers, and `YOUTUBE_UPDATED` is the date of the @lids YouTube Shorts views. Every "as of" label reads from these.
 - `stats: { views, likes, comments }` holds the latest Instagram numbers. Views can be exact (`28209`) or rounded the way Instagram shows them (`'21.2K'`). Rounded values display and total in K format, and if any episode is rounded, the Instagram views total is shown rounded too.
 - `insights: { viewers, reposts, shares, saves, avgWatchSec, follows }` comes from Instagram Insights. Leave out any you don't have, or set the whole thing to `null`. When `INSIGHTS_UPDATED` differs from `STATS_UPDATED`, a note under the grid gives the Insights date.

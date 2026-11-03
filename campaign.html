@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/">
+  <title>Lids case study | The Handoff by 8tivLabs</title>
+  <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* color */
+      --bg: #1b1c1e;          /* base */
+      --surface: #232427;     /* elevated panels */
+      --surface-2: #2c2d31;   /* floating: chips, stat cells */
+      --line: rgba(255, 255, 255, 0.09);
+      --text: #dcdcde;        /* light gray body */
+      --text-hi: #f4f4f5;     /* numbers, titles */
+      --text-2: #8d8e94;      /* labels, secondary */
+      --red: #fa273d;         /* 8tivLabs red */
+      --red-soft: rgba(250, 39, 61, 0.14);
+
+      /* type */
+      --font-display: "Archivo", "Arial Narrow", sans-serif;
+      --font-body: "IBM Plex Sans", system-ui, sans-serif;
+      --text-xs: 0.8125rem;   /* 13 */
+      --text-sm: 0.875rem;    /* 14 */
+      --text-md: 1rem;        /* 16 */
+      --text-lg: 1.25rem;     /* 20 */
+      --num-sm: 2rem;         /* 32 */
+      --num-md: clamp(2.5rem, 5vw, 3.5rem);
+      --num-xl: clamp(4rem, 11vw, 7.5rem);
+      --title: clamp(4rem, 13vw, 9.5rem);
+
+      /* space */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 16px;
+      --space-4: 24px;
+      --space-5: 40px;
+      --space-6: 64px;
+      --space-7: 104px;
+
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-panel:
+        0 1px 0 rgba(255, 255, 255, 0.04) inset,
+        0 2px 6px rgba(0, 0, 0, 0.18),
+        0 18px 40px -12px rgba(0, 0, 0, 0.45);
+      --ease-spring: cubic-bezier(0.22, 1.2, 0.36, 1);
+      --page-max: 1180px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background:
+        radial-gradient(60rem 40rem at 100% -10%, rgba(250, 39, 61, 0.10), transparent 60%),
+        radial-gradient(50rem 40rem at -10% 30%, rgba(255, 255, 255, 0.035), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: var(--text-md);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* film grain */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.06;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .page {
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: var(--space-4) var(--space-3) var(--space-6);
+    }
+
+    .num {
+      font-family: var(--font-display);
+      font-stretch: 70%;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-hi);
+      line-height: 0.9;
+      letter-spacing: -0.01em;
+    }
+
+    a { color: inherit; }
+    .link {
+      display: inline-block;
+      text-decoration: none;
+      color: var(--text);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      transition: transform 250ms var(--ease-spring), opacity 150ms ease;
+    }
+    .link:hover { transform: translateY(-1px); color: var(--text-hi); }
+    .link:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+    .link:active { transform: translateY(1px); opacity: 0.7; }
+
+    /* ---------- masthead ---------- */
+    .masthead {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding-bottom: var(--space-4);
+      border-bottom: 1px solid var(--line);
+    }
+    .lockup { display: flex; align-items: center; gap: var(--space-2); }
+    .lockup img { width: 44px; height: 44px; border-radius: var(--radius-sm); }
+    .lockup .x { color: var(--text-2); font-size: var(--text-sm); }
+    .by {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--text-2);
+      text-align: right;
+      line-height: 1.4;
+    }
+    .by img { width: 32px; height: 32px; border-radius: 6px; }
+
+    /* ---------- hero ---------- */
+    .hero { padding: var(--space-6) 0 var(--space-5); }
+    .kicker { color: var(--red); font-weight: 600; font-size: var(--text-sm); margin-bottom: var(--space-3); }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-stretch: 68%;
+      font-weight: 900;
+      font-size: var(--title);
+      line-height: 0.82;
+      letter-spacing: -0.03em;
+      color: var(--text-hi);
+      text-transform: uppercase;
+    }
+    .intro {
+      display: grid;
+      gap: var(--space-4);
+      margin-top: var(--space-5);
+    }
+    .intro .lead { font-size: var(--text-lg); line-height: 1.6; color: var(--text-hi); max-width: 34ch; }
+    .intro h2 { font-size: var(--text-md); font-weight: 600; color: var(--text-hi); margin-bottom: var(--space-1); }
+    .intro p { max-width: 58ch; }
+
+    /* ---------- campaign totals ---------- */
+    .totals {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-panel);
+    }
+    .totals > div { background: var(--surface); padding: var(--space-4); }
+    .totals .num { font-size: var(--num-md); }
+    .totals .label { font-size: var(--text-sm); color: var(--text-2); margin-top: var(--space-2); }
+    .totals > div:first-child .num { color: var(--red); }
+    .totals-note { font-size: var(--text-xs); color: var(--text-2); margin-top: var(--space-3); }
+    .organic {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--red-soft);
+      color: #ff8a97;
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+    .organic::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
+
+    /* ---------- sections ---------- */
+    section { margin-top: var(--space-7); }
+    .section-head { margin-bottom: var(--space-5); }
+    .section-head h2 {
+      font-family: var(--font-display);
+      font-stretch: 75%;
+      font-weight: 800;
+      font-size: clamp(2.25rem, 5vw, 3.25rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--text-hi);
+    }
+    .section-head p { color: var(--text-2); margin-top: var(--space-2); max-width: 60ch; }
+
+    /* ---------- episode slides ---------- */
+    .slides { display: grid; gap: var(--space-5); }
+    .slide {
+      display: grid;
+      grid-template-columns: minmax(200px, 280px) 1fr;
+      gap: var(--space-6);
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-panel);
+    }
+    .slide-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2) var(--space-3);
+      font-size: var(--text-sm);
+      color: var(--text-2);
+      margin-bottom: var(--space-4);
+    }
+    .slide-meta h3 {
+      font-family: var(--font-display);
+      font-stretch: 75%;
+      font-weight: 800;
+      font-size: var(--text-lg);
+      color: var(--text-hi);
+      letter-spacing: 0.01em;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: var(--text-xs);
+      font-weight: 600;
+    }
+    .chip.is-live { background: var(--red-soft); color: #ff8a97; }
+    .chip.is-live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+    .ep-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--text-hi);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 250ms var(--ease-spring), opacity 150ms ease;
+    }
+    .ep-link svg { width: 14px; height: 14px; }
+    .ep-link:hover { transform: translateY(-1px); border-color: var(--red); }
+    .ep-link:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+    .ep-link:active { transform: translateY(1px); opacity: 0.7; }
+    .ep-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: var(--red);
+      color: #fff;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 6px 18px -6px rgba(250, 39, 61, 0.55);
+      transition: transform 250ms var(--ease-spring), opacity 150ms ease;
+    }
+    .ep-cta svg { width: 16px; height: 16px; flex: none; }
+    .ep-cta:hover { transform: translateY(-1px); }
+    .ep-cta:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    .ep-cta:active { transform: translateY(1px); opacity: 0.8; }
+    .ep-cta small { font-weight: 400; opacity: 0.8; }
+    .ep-title { flex-basis: 100%; color: var(--text-hi); font-size: var(--text-md); font-weight: 500; margin-top: calc(var(--space-1) * -1); }
+
+    /* YouTube Shorts on the @lids channel */
+    .yt {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-top: var(--space-2);
+      padding: var(--space-3);
+      border-radius: var(--radius-md);
+      background: var(--surface-2);
+      border-left: 3px solid var(--red);
+    }
+    .yt-icon { flex: none; width: 28px; height: 20px; }
+    .yt-what { line-height: 1.35; font-size: var(--text-xs); color: var(--text-2); }
+    .yt-what b { display: block; color: var(--text-hi); font-size: var(--text-sm); font-weight: 600; }
+    .yt-views { margin-left: auto; text-align: right; }
+    .yt-views .num { font-size: var(--num-sm); }
+    .yt-views span:last-child { display: block; font-size: var(--text-xs); color: var(--text-2); }
+    .card .yt { margin-top: var(--space-3); }
+
+    .views .num { font-size: var(--num-xl); }
+    .views .label { font-size: var(--text-md); color: var(--text-2); margin-top: var(--space-2); }
+    .views .label strong { color: var(--text-hi); font-weight: 600; }
+    .bar { width: 48px; height: 3px; background: var(--red); margin: var(--space-4) 0; border-radius: 2px; }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-2);
+    }
+    .stat-grid div {
+      display: flex;
+      flex-direction: column;
+      background: var(--surface-2);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+    }
+    .stat-grid dd { order: -1; }
+    .stat-grid .num { font-size: var(--num-sm); }
+    .stat-grid dt { font-size: var(--text-xs); color: var(--text-2); margin-top: var(--space-1); }
+    .grid-note { font-size: var(--text-xs); color: var(--text-2); margin-top: var(--space-2); }
+
+    /* compact cards for episodes still waiting on stats */
+    .upcoming {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-5);
+    }
+    .card {
+      display: grid;
+      grid-template-columns: minmax(110px, 160px) 1fr;
+      gap: var(--space-4);
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-panel);
+    }
+    .card .slide-meta { margin-bottom: var(--space-2); }
+    .card .note { color: var(--text-2); font-size: var(--text-sm); }
+
+    /*
+      Phone mockup. The frame PNG (1506x3102) has a transparent screen at
+      x 44–1466, y 32–3069; the insets below are those edges as percentages.
+    */
+    .phone {
+      position: relative;
+      aspect-ratio: 1506 / 3102;
+      width: 100%;
+      filter: drop-shadow(0 24px 30px rgba(0, 0, 0, 0.5));
+    }
+    .phone-screen {
+      position: absolute;
+      left: 2.92%;
+      right: 2.66%;
+      top: 1.03%;
+      bottom: 1.06%;
+      border-radius: 15% / 7.2%;
+      overflow: hidden;
+      background: #0d0d0e;
+    }
+    .phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: center bottom; display: block; }
+    .phone-frame { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .phone-empty {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: var(--space-3);
+      color: var(--text-2);
+      font-size: var(--text-xs);
+    }
+
+    /* ---------- plan ---------- */
+    .plan {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: var(--space-5);
+      align-items: start;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-panel);
+    }
+    .panel h3 { font-size: var(--text-md); font-weight: 600; color: var(--text-hi); margin-bottom: var(--space-4); }
+
+    .timeline { list-style: none; font-size: var(--text-sm); }
+    .timeline li {
+      display: grid;
+      grid-template-columns: 16px 6.5em 1fr;
+      gap: var(--space-3);
+      padding: var(--space-3) 0;
+      border-top: 1px solid var(--line);
+      align-items: baseline;
+    }
+    .timeline li:first-child { border-top: 0; padding-top: 0; }
+    .timeline .dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--text-2); align-self: center; }
+    .timeline .is-done .dot { background: var(--text-2); }
+    .timeline .is-now .dot { border-color: var(--red); background: var(--red); box-shadow: 0 0 0 4px var(--red-soft); }
+    .timeline .date { color: var(--text-2); font-variant-numeric: tabular-nums; }
+    .timeline .is-now .date { color: var(--red); font-weight: 600; }
+    .timeline .what { color: var(--text-hi); }
+    .timeline .phase { display: block; color: var(--text-2); font-size: var(--text-xs); }
+
+    .kpi .num { font-size: var(--num-md); color: var(--red); margin-bottom: var(--space-3); }
+    .kpi p { font-size: var(--text-sm); }
+    .kpi p + p { margin-top: var(--space-2); color: var(--text-2); }
+
+    /* ---------- long-form YouTube ---------- */
+    .longform { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-5); }
+    .lf {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-panel);
+      overflow: hidden;
+    }
+    .lf::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 3px;
+      background: var(--red);
+    }
+    .lf-top { display: flex; align-items: center; gap: var(--space-3); }
+    .lf-top .yt-icon { width: 34px; height: 24px; }
+    .lf h3 {
+      font-family: var(--font-display);
+      font-stretch: 75%;
+      font-weight: 800;
+      font-size: clamp(1.75rem, 3.4vw, 2.25rem);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--text-hi);
+    }
+    .lf-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font-size: var(--text-sm); color: var(--text-2); }
+    .lf-meta b { color: var(--text-hi); font-weight: 600; }
+
+    footer {
+      margin-top: var(--space-7);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--text-2);
+    }
+
+    /* ---------- reveal ---------- */
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity 600ms ease, transform 800ms var(--ease-spring); }
+    .reveal.is-in { opacity: 1; transform: none; }
+
+    /* ---------- responsive ---------- */
+    @media (min-width: 760px) {
+      .page { padding: var(--space-5) var(--space-5) var(--space-6); }
+      .intro { grid-template-columns: 1.1fr 1fr; gap: var(--space-6); align-items: end; }
+      .totals { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    @media (max-width: 1023px) {
+      .slide { grid-template-columns: 200px 1fr; gap: var(--space-5); padding: var(--space-4); }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .upcoming { grid-template-columns: 1fr; }
+      .plan { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 679px) {
+      .longform { grid-template-columns: 1fr; gap: var(--space-4); }
+      .lf { padding: var(--space-4) var(--space-3); }
+      .masthead .by > span { display: none; }
+      .slide { grid-template-columns: 1fr; padding: var(--space-4) var(--space-3); }
+      .slide .phone { max-width: 220px; margin: 0 auto; }
+      .card { grid-template-columns: 110px 1fr; padding: var(--space-3); }
+      .panel { padding: var(--space-4) var(--space-3); }
+      .timeline li { grid-template-columns: 12px 5.5em 1fr; gap: var(--space-2); }
+    }
+
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ep-link, .ep-cta { transition: none; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .link { transition: none; }
+    }
+
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body::before { display: none; }
+      .reveal { opacity: 1; transform: none; }
+      section, .slide, .card { break-inside: avoid; }
+      footer .link { display: none; }
+    }
+
+    /* ---------- case study ---------- */
+    .hero h1 { font-size: clamp(3.25rem, 10vw, 7.5rem); line-height: 0.88; }
+    .approach { margin-top: var(--space-6); }
+    /* five headline stats: one row on desktop, and the last one fills its row below that */
+    .stat-grid div:last-child { grid-column: 1 / -1; }
+    @media (min-width: 1024px) {
+      .stat-grid { grid-template-columns: repeat(5, 1fr); }
+      .stat-grid div:last-child { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="masthead">
+      <div class="lockup">
+        <img src="img/fits-logo.png" alt="Fits From The Streets">
+        <span class="x" aria-hidden="true">x</span>
+        <img src="img/lids-logo.png" alt="Lids">
+      </div>
+      <div class="by">
+        <span>Case study by 8tivLabs<br><span id="updated"></span></span>
+        <img src="img/8tivlabs-logo.jpg" alt="8tivLabs">
+      </div>
+    </header>
+
+    <div class="hero">
+      <p class="kicker">Case study: Fits From The Streets x Lids</p>
+      <h1>Credibility<br>can't be<br>bought</h1>
+      <div class="intro">
+        <p class="lead">Lids wanted a more authentic place in creator culture and a stronger presence on its YouTube page. Paid ads weren't going to earn either one.</p>
+        <div>
+          <h2>What 8tivLabs did</h2>
+          <p>We ran The Handoff, a fully organic campaign in the creator space, and used it to give the @lids YouTube channel new content, with long-form pieces as the next step.</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="approach" aria-labelledby="approach-title">
+      <div class="section-head">
+        <h2 id="approach-title">The Handoff</h2>
+      </div>
+      <div class="intro">
+        <p class="lead">One cap. One continuous chain. Real people carrying real culture forward, with the cap moving from one story to the next.</p>
+        <div>
+          <h2>Seeding, not casting</h2>
+          <p>Subjects are seeded through the whole eight-week run, not batched into one shoot day. Credibility comes from real proximity to street and sports culture, not follower count. It's the same approach that worked on the Nike campaign.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="results-title">
+      <div class="section-head">
+        <h2 id="results-title">Results so far</h2>
+      </div>
+      <div class="reveal" data-reveal>
+        <p class="organic">All engagement is organic</p>
+        <div class="totals" id="totals"></div>
+        <p class="totals-note" id="totals-note"></p>
+      </div>
+    </section>
+
+    <section aria-labelledby="eps-title">
+      <div class="section-head">
+        <h2 id="eps-title">Episode by episode</h2>
+        <p id="stats-note"></p>
+      </div>
+      <div class="slides" id="slides"></div>
+      <div class="upcoming" id="upcoming"></div>
+    </section>
+
+    <section aria-labelledby="lf-title">
+      <div class="section-head">
+        <h2 id="lf-title">Building the YouTube page</h2>
+        <p id="yt-note"></p>
+      </div>
+      <div class="longform">
+        <article class="lf reveal" data-reveal>
+          <div class="lf-top">
+            <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
+            <span class="chip">In development</span>
+          </div>
+          <h3>Lids Hand Off</h3>
+          <p class="lf-meta"><span>Long-form YouTube</span><span>Delivery <b>Week of Nov 2</b></span></p>
+        </article>
+        <article class="lf reveal" data-reveal>
+          <div class="lf-top">
+            <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
+            <span class="chip">In development</span>
+          </div>
+          <h3>Fits From The Streets x LIDS: NYC Pull Up</h3>
+          <p class="lf-meta"><span>Long-form YouTube</span><span>Delivery <b>TBD</b></span></p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-label="Campaign plan">
+      <div class="plan">
+        <div class="panel reveal" data-reveal>
+          <h3>Timeline</h3>
+          <ol class="timeline" id="timeline"></ol>
+        </div>
+        <div class="panel kpi reveal" data-reveal>
+          <h3>How we measure it</h3>
+          <p class="num">Impressions</p>
+          <p>The primary KPI for every drop.</p>
+          <p>Click-through is treated as upside, not a committed metric.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>A case study by 8tivLabs.</span>
+    </footer>
+  </div>
+
+  <script src="data/stats.js"></script>
+  <script>
+    const INSIGHT_LABELS = [
+      ['viewers', 'Viewers'], ['reposts', 'Reposts'], ['shares', 'Shares'],
+    ];
+
+    const exact = new Intl.NumberFormat('en-US');
+    const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
+    const toDate = (iso) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
+    const short = (iso) => toDate(iso).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).replace(',', '');
+    const brief = (iso) => toDate(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const long = (iso) => toDate(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const isOut = (iso) => toDate(iso) <= today;
+
+    // '21.2K' -> { value: 21200, rounded: true }; 931 -> { value: 931, rounded: false }
+    function parseCount(v) {
+      if (typeof v === 'number') return { value: v, rounded: false };
+      const m = String(v).trim().match(/^([\d.,]+)\s*([km])?$/i);
+      if (!m) return { value: 0, rounded: false };
+      const base = Number(m[1].replace(/,/g, ''));
+      const mult = { k: 1e3, m: 1e6 }[(m[2] || '').toLowerCase()] || 1;
+      return { value: Math.round(base * mult), rounded: Boolean(m[2]) };
+    }
+    const show = (value, rounded) => (rounded ? compact : exact).format(value);
+
+    // a number that counts up when it scrolls into view
+    const count = (v, suffix = '') => {
+      const { value, rounded } = parseCount(v);
+      return `<span class="num" data-count="${value}" data-rounded="${rounded ? 1 : ''}" data-suffix="${esc(suffix)}">${show(value, rounded)}${esc(suffix)}</span>`;
+    };
+
+    const phone = (ep) => `
+      <div class="phone">
+        <div class="phone-screen">${ep.image
+          ? `<img src="${esc(ep.image)}" alt="${esc(ep.alt)}" loading="lazy">`
+          : `<div class="phone-empty">Still coming</div>`}</div>
+        <img class="phone-frame" src="img/iphone-frame.png" alt="">
+      </div>`;
+
+    const meta = (ep) => `
+      <div class="slide-meta">
+        <h3>Episode ${ep.number}</h3>
+        <span>${short(ep.date)}</span>
+        <span class="chip${isOut(ep.date) ? ' is-live' : ''}">${isOut(ep.date) ? 'Out now' : 'Coming up'}</span>
+        ${ep.instagram ? `<a class="ep-link" href="${esc(ep.instagram)}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          View on Instagram<span class="visually-hidden"> (opens in a new tab)</span></a>` : ''}
+        ${ep.title ? `<p class="ep-title">${esc(ep.title)}</p>` : ''}
+      </div>`;
+
+    const youtube = (ep) => !ep.youtube ? '' : `
+      <div class="yt">
+        <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
+        <p class="yt-what"><b>YouTube Shorts</b>on the @lids channel</p>
+        <p class="yt-views">${count(ep.youtube.views)}<span>views</span></p>
+      </div>`;
+
+    const video = (ep) => !ep.video ? '' : `
+      <a class="ep-cta" href="${esc(ep.video.url)}" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M5 21h14"/></svg>
+        ${esc(ep.video.label)} <small>on Vimeo</small><span class="visually-hidden"> (opens in a new tab)</span>
+      </a>`;
+
+    const cell = (label, v, suffix) => `<div><dt>${label}</dt><dd>${count(v, suffix)}</dd></div>`;
+
+    document.getElementById('updated').textContent = `Stats as of ${long(STATS_UPDATED)}`;
+    document.getElementById('stats-note').textContent =
+      (YOUTUBE_UPDATED === STATS_UPDATED
+        ? `Instagram on @fitsfromthestreets and YouTube Shorts on @lids, as of ${long(STATS_UPDATED)}.`
+        : `Instagram on @fitsfromthestreets as of ${long(STATS_UPDATED)}. YouTube Shorts on @lids as of ${long(YOUTUBE_UPDATED)}.`) +
+      ' All engagement is organic.';
+
+    // campaign totals across every episode that has stats
+    const withStats = EPISODES.filter((ep) => ep.stats);
+    const withLikes = withStats.filter((ep) => ep.stats.likes != null);
+    const withYouTube = EPISODES.filter((ep) => ep.youtube);
+    const total = (list) => list.reduce((acc, v) => {
+      const { value, rounded } = parseCount(v);
+      return { value: acc.value + value, rounded: acc.rounded || rounded };
+    }, { value: 0, rounded: false });
+    const asInput = ({ value, rounded }) => (rounded ? `${value / 1000}K` : value);
+    const plural = (n) => `${n} episode${n === 1 ? '' : 's'}`;
+
+    document.getElementById('totals').innerHTML = [
+      [total(withStats.map((ep) => ep.stats.views)), 'Instagram views'],
+      [total(withYouTube.map((ep) => ep.youtube.views)), 'YouTube Shorts views on @lids'],
+      [total(withLikes.map((ep) => ep.stats.likes)), 'Instagram likes'],
+      [total(withStats.map((ep) => ep.stats.comments)), 'Instagram comments'],
+    ].map(([t, label]) => `<div>${count(asInput(t))}<p class="label">${label}</p></div>`).join('');
+    document.getElementById('yt-note').textContent =
+      `Shorts from ${plural(withYouTube.length)} have ${exact.format(total(withYouTube.map((ep) => ep.youtube.views)).value)} views on the @lids channel as of ${long(YOUTUBE_UPDATED)}. ` +
+      'Long-form is the next step: Lids Hand Off delivers the week of Nov 2, and the NYC Pull Up date is to be confirmed.';
+    const later = withStats.filter((ep) => ep.asOf && ep.asOf !== STATS_UPDATED)
+      .map((ep) => `Episode ${ep.number} as of ${brief(ep.asOf)}`);
+    const noLikes = withStats.filter((ep) => ep.stats.likes == null).map((ep) => `Episode ${ep.number}`);
+    document.getElementById('totals-note').textContent =
+      (YOUTUBE_UPDATED === STATS_UPDATED
+        ? `Instagram across ${plural(withStats.length)} and YouTube Shorts across ${plural(withYouTube.length)}, as of ${long(STATS_UPDATED)}`
+        : `Instagram across ${plural(withStats.length)} as of ${long(STATS_UPDATED)}, YouTube Shorts across ${plural(withYouTube.length)} as of ${long(YOUTUBE_UPDATED)}`) +
+      (later.length ? ` (${later.join(', ')})` : '') + '.' +
+      (noLikes.length ? ` Likes don't include ${noLikes.join(' or ')}.` : '');
+
+    document.getElementById('slides').innerHTML = withStats.map((ep) => {
+      const insights = ep.insights
+        ? INSIGHT_LABELS.filter(([k]) => ep.insights[k] != null).map(([k, label, suffix]) => cell(label, ep.insights[k], suffix)).join('')
+        : '';
+      return `
+      <article class="slide reveal" data-reveal aria-label="Episode ${ep.number}">
+        ${phone(ep)}
+        <div>
+          ${meta(ep)}
+          <div class="views">
+            ${count(ep.stats.views)}
+            <p class="label">Instagram views</p>
+          </div>
+          <div class="bar" aria-hidden="true"></div>
+          <dl class="stat-grid">${ep.stats.likes != null ? cell('Likes', ep.stats.likes) : ''}${cell('Comments', ep.stats.comments)}${insights}</dl>
+          ${ep.asOf && ep.asOf !== STATS_UPDATED ? `<p class="grid-note">Episode ${ep.number} numbers are as of ${brief(ep.asOf)}.</p>` : ''}
+          ${insights && !ep.asOf && INSIGHTS_UPDATED !== STATS_UPDATED ? `<p class="grid-note">Viewers, reposts and shares are from Instagram Insights on ${brief(INSIGHTS_UPDATED)}.</p>` : ''}
+          ${youtube(ep)}
+          ${video(ep)}
+        </div>
+      </article>`;
+    }).join('');
+
+    const upcoming = document.getElementById('upcoming');
+    upcoming.innerHTML = EPISODES.filter((ep) => !ep.stats).map((ep) => `
+      <article class="card reveal" data-reveal aria-label="Episode ${ep.number}">
+        ${phone(ep)}
+        <div>
+          ${meta(ep)}
+          <p class="note">${isOut(ep.date) ? 'Stats arrive with the next update.' : `Stats start after launch on ${short(ep.date)}.`}</p>
+          ${youtube(ep)}
+          ${video(ep)}
+        </div>
+      </article>`).join('');
+    if (withStats.length && upcoming.children.length) upcoming.style.marginTop = 'var(--space-5)';
+    if (upcoming.children.length === 1) upcoming.style.gridTemplateColumns = 'minmax(0, 560px)';
+
+    // timeline: past items filled in, the latest one marked in red
+    const current = TIMELINE.filter((t) => t.date && isOut(t.date)).pop();
+    document.getElementById('timeline').innerHTML = TIMELINE.map((t) => {
+      const state = !t.date ? '' : t === current ? 'is-now' : isOut(t.date) ? 'is-done' : '';
+      return `<li class="${state}"><span class="dot" aria-hidden="true"></span>
+        <span class="date">${t.date ? short(t.date) : esc(t.label)}</span>
+        <span class="what">${esc(t.what)}${t.phase ? `<span class="phase">${esc(t.phase)}</span>` : ''}</span></li>`;
+    }).join('');
+
+    // ---------- motion: reveal panels and count numbers up on scroll ----------
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const easeOut = (t) => 1 - Math.pow(1 - t, 4);
+
+    function runCount(el) {
+      const target = Number(el.dataset.count);
+      const rounded = Boolean(el.dataset.rounded);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1400 + String(target).length * 80;
+      const start = performance.now();
+      const frame = (now) => {
+        const t = Math.min((now - start) / duration, 1);
+        el.textContent = show(t < 1 ? Math.round(target * easeOut(t)) : target, rounded) + suffix;
+        if (t < 1) requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+    }
+
+    if (!reduceMotion && 'IntersectionObserver' in window) {
+      document.querySelectorAll('[data-count]').forEach((el) => { el.textContent = '0' + (el.dataset.suffix || ''); });
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-in');
+          entry.target.querySelectorAll('[data-count]').forEach(runCount);
+          io.unobserve(entry.target);
+        });
+      }, { threshold: 0.25 });
+      document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+    } else {
+      document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-in'));
+    }
+  </script>
+</body>
+</html>

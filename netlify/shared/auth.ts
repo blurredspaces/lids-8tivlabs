@@ -3,12 +3,14 @@
 // so changing the password in Netlify signs everyone out.
 
 export const COOKIE = "lids_auth";
+export const CAMPAIGN_COOKIE = "lids_campaign";
+export const CAMPAIGN_SCOPE = "lids-campaign";
 export const MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
 const encoder = new TextEncoder();
 
-export async function tokenFor(password: string): Promise<string> {
-  const digest = await crypto.subtle.digest("SHA-256", encoder.encode(`lids-onesheet:${password}`));
+export async function tokenFor(password: string, scope = "lids-onesheet"): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", encoder.encode(`${scope}:${password}`));
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
@@ -22,4 +24,9 @@ export function safeEqual(a: string, b: string): boolean {
 
 export function expectedPassword(): string | undefined {
   return Netlify.env.get("ADMIN_PASSWORD") || undefined;
+}
+
+// The case study's own password, so sharing /campaign doesn't open the one-sheet.
+export function expectedCampaignPassword(): string | undefined {
+  return Netlify.env.get("CAMPAIGN_PASSWORD") || undefined;
 }

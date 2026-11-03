@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/">
+  <title>Lids case study | 8tivLabs</title>
+  <meta name="description" content="How 8tivLabs ran a fully organic creator campaign for Lids.">
+  <!-- link previews (iMessage, Slack, LinkedIn, X). Crawlers need an absolute image URL. -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Lids case study: The Handoff">
+  <meta property="og:description" content="How 8tivLabs ran a fully organic creator campaign for Lids.">
+  <meta property="og:image" content="/img/share.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Episode 1 subject in a black White Sox cap beside the LIDS wordmark">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --paper: #ffffff;
+      --ink: #000000;
+      --ink-dim: #6b6b6b;
+      --field-line: #b9b9b9;
+      --error: #b3001b;
+      --ease-spring: cubic-bezier(0.22, 1.2, 0.36, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      /* Mac OS X Aqua-era system type: Lucida Grande on Macs, Lucida Sans Unicode on Windows */
+      font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      display: grid;
+      place-items: center;
+      padding: 24px 16px;
+    }
+
+    main { width: 100%; max-width: 340px; text-align: center; }
+
+    .logo { display: block; width: 48px; height: 48px; margin: 0 auto 16px; }
+
+    h1 {
+      font-weight: 700;
+      font-size: clamp(2.5rem, 8vw, 3.75rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .sub { margin-top: 12px; font-size: 1rem; color: var(--ink-dim); }
+
+    /* ---------- the form ---------- */
+    form { margin-top: 24px; text-align: left; }
+
+    label { display: block; font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+
+    .field { position: relative; }
+
+    input {
+      display: block;
+      width: 100%;
+      height: 52px;
+      padding: 0 14px;
+      border: 1px solid var(--field-line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-size: 17px; /* 16px+ stops iOS zooming on focus */
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
+      -webkit-appearance: none;
+      appearance: none;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+    input::placeholder { color: #a3a3a3; }
+    input:hover { border-color: #8a8a8a; }
+    input:focus { outline: none; border-color: var(--ink); box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), 0 0 0 3px rgba(0, 0, 0, 0.12); }
+    input[aria-invalid="true"] { border-color: var(--error); box-shadow: 0 0 0 3px rgba(179, 0, 27, 0.14); }
+    .field.has-toggle input { padding-right: 72px; }
+    input[type="password"]:not(:placeholder-shown) { letter-spacing: 0.1em; }
+
+    .toggle {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      height: 40px;
+      padding: 0 12px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.875rem;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+    }
+    .toggle:hover { background: #f1f1f1; text-decoration: none; }
+    .toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+    .toggle:active { background: #e6e6e6; }
+
+    .error { min-height: 1.4em; margin-top: 8px; font-size: 0.875rem; color: var(--error); }
+
+    .submit {
+      display: block;
+      width: 100%;
+      height: 52px;
+      margin-top: 8px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--paper);
+      font: inherit;
+      font-size: 1.0625rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 250ms var(--ease-spring), opacity 150ms ease;
+    }
+    .submit:hover { transform: translateY(-1px); }
+    .submit:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+    .submit:active { transform: translateY(1px); opacity: 0.85; }
+    .submit:disabled { opacity: 0.55; cursor: default; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      input, .submit { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <img class="logo" src="img/8tivlabs-logo.jpg" alt="8tivLabs" width="48" height="48">
+    <h1>LIDS</h1>
+
+    <p class="sub">Campaign case study</p>
+
+    <form id="signin" novalidate>
+      <label for="field">Password</label>
+      <div class="field has-toggle">
+        <input id="field" name="password" type="password" maxlength="128" placeholder="Type the password"
+               autocomplete="current-password" autocapitalize="off" spellcheck="false" enterkeyhint="go"
+               aria-describedby="error" autofocus>
+        <button class="toggle" id="toggle" type="button" aria-controls="field">Show</button>
+      </div>
+      <p class="error" id="error" role="alert"></p>
+      <button class="submit" id="submit" type="submit">View case study</button>
+    </form>
+  </main>
+
+  <script>
+    const form = document.getElementById('signin');
+    const input = document.getElementById('field');
+    const toggle = document.getElementById('toggle');
+    const error = document.getElementById('error');
+    const submit = document.getElementById('submit');
+    let busy = false;
+
+    function setError(message) {
+      error.textContent = message;
+      if (message) input.setAttribute('aria-invalid', 'true');
+      else input.removeAttribute('aria-invalid');
+    }
+
+    function setBusy(on) {
+      busy = on;
+      input.readOnly = on; // readOnly keeps focus; disabled would close the keyboard
+      submit.disabled = on;
+      submit.textContent = on ? 'Checking…' : 'View case study';
+    }
+
+    async function checkPassword(password) {
+      try {
+        const res = await fetch('/api/campaign-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password }),
+        });
+        if (res.ok) return 'ok';
+        return res.status === 401 ? 'wrong' : 'error';
+      } catch {
+        return 'error';
+      }
+    }
+
+    input.addEventListener('input', () => { if (error.textContent) setError(''); });
+
+    // pressing the buttons shouldn't pull focus off the field, which would close the phone keyboard
+    [submit, toggle].forEach((btn) => btn.addEventListener('mousedown', (e) => e.preventDefault()));
+
+    toggle.addEventListener('click', () => {
+      const showing = input.type === 'text';
+      input.type = showing ? 'password' : 'text';
+      toggle.textContent = showing ? 'Show' : 'Hide';
+      toggle.setAttribute('aria-pressed', String(!showing));
+      input.focus({ preventScroll: true });
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (busy) return;
+      const value = input.value;
+      if (!value) { setError('Type the password, then tap View case study.'); return input.focus(); }
+
+      setBusy(true);
+      const result = await checkPassword(value);
+      setBusy(false);
+
+      if (result === 'ok') return location.replace('/campaign');
+      if (result === 'wrong') {
+        input.value = '';
+        setError("That password didn't work. Try again.");
+      } else {
+        setError("Couldn't check the password. Try again in a moment.");
+      }
+      input.focus({ preventScroll: true });
+    });
+  </script>
+</body>
+</html>
