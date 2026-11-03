@@ -566,6 +566,9 @@
 
     .longform { grid-template-columns: 1fr; gap: var(--space-4); }
 
+    .contact .section-head { margin-bottom: var(--space-3); }
+    .contact .ep-cta { margin-top: 0; padding: 14px 22px; font-size: var(--text-md); }
+
     /* five headline stats: one row on desktop, and the last one fills its row below that */
     .stat-grid div:last-child { grid-column: 1 / -1; }
 
@@ -683,6 +686,16 @@
         </div>
       </section>
     </div>
+
+    <section class="contact" aria-labelledby="contact-title">
+      <div class="section-head">
+        <h2 id="contact-title">Want to run something like this?</h2>
+      </div>
+      <a class="ep-cta" href="mailto:connect@8tivlabs.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        Email connect@8tivlabs.com
+      </a>
+    </section>
 
     <footer>
       <span>A case study by 8tivLabs.</span>
