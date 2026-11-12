@@ -10,6 +10,8 @@ Static pages, no build step.
 - **`campaign-signin.html` (case study sign-in).** One password field in the sign-in page's white style. It appears at `/campaign` until the visitor signs in.
 - **`data/stats.js` (shared numbers).** Stats, dates and the timeline for both the one-sheet and the case study. Update numbers here only.
 
+- **`lids-popup.html` (pop-up entry form, at `/lids-popup`).** A public page with no password. It holds only the ClickUp entry form for the fitsfromthestreets x LIDS NYC Times Square pop-up, on a dark background that matches the form. ClickUp's embed script sets the form's height, so the page scrolls and the form doesn't scroll inside itself.
+
 The source images live in `graphics/`, which is git-ignored. The web-sized copies the pages use are in `img/`.
 
 ## Password protection
