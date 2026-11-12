@@ -27,7 +27,7 @@ The source images live in `graphics/`, which is git-ignored. The web-sized copie
 - If `CAMPAIGN_PASSWORD` isn't set, `/campaign` stays locked and its sign-in shows "Couldn't check the password. Try again in a moment."
 
 ## Analytics
-- Every page (`index.html`, `onesheet.html`, `campaign.html`, `campaign-signin.html`, `popup.html`) loads Google Analytics with the measurement ID `G-H4Q3S7VS5R`, the same property as 8tivlabs.com. The tag sits at the top of each `<head>`. Filter by hostname in Analytics to see this site alone.
+- Every page (`index.html`, `onesheet.html`, `campaign.html`, `campaign-signin.html`, `popup.html`) loads Google Analytics with the measurement ID `G-BZ2HTJYRRG`, a separate data stream from the one on 8tivlabs.com (`G-H4Q3S7VS5R`). The tag sits at the top of each `<head>`.
 - The pop-up form is a ClickUp iframe, so Analytics counts visits to `/popup` but not form submissions.
 
 ## Layout
