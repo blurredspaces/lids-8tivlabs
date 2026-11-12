@@ -27,7 +27,7 @@ The source images live in `graphics/`, which is git-ignored. The web-sized copie
 ## Layout
 - The sign-in page is black on white: a centered 340px column with the logo, LIDS, the transcript, then the form.
 - The one-sheet's max content width is `--page-max` (1180px), centered. Side gutters are `--space-3` (16px) on mobile and `--space-5` (40px) from 760px up.
-- One-sheet order: masthead (Fits x Lids lockup, "Prepared by 8tivLabs"), hero (title + intro), campaign totals band, episode stat slides, upcoming-episode cards, plan row (Timeline + How we measure it), Long-form YouTube, footer.
+- One-sheet order: masthead (Fits x Lids lockup, "Prepared by 8tivLabs"), hero (title + intro), Long-form YouTube, campaign totals band, episode stat slides, upcoming-episode cards, plan row (Timeline + How we measure it), footer.
 - Depth has three layers: `--bg` for the page, `--surface` for panels and `--surface-2` for chips and stat cells.
 
 ## Design tokens
@@ -61,7 +61,7 @@ Sign-in (`index.html`): `--paper` #ffffff, `--ink` #000000, `--ink-dim` #6b6b6b,
 | Upcoming card | For episodes without stats: a small phone, a status line and, when available, the YouTube strip. |
 | Phone mockup | The frame is 1506×3102. Its transparent screen spans x 44–1466 and y 32–3069, inset as `left 2.92% / right 2.66% / top 1.03% / bottom 1.06%`, with `border-radius: 15% / 7.2%`. Screen images use `object-fit: cover` anchored to the bottom. |
 | Status chip | Computed from each episode's `date` against the viewer's local date: "Out now" (red) on or after the date, otherwise "Coming up". |
-| Long-form YouTube | The last section before the footer. Two cards ("Lids Hand Off" and "Fits From The Streets x LIDS: NYC Pull Up"), each with a red top edge, YouTube icon, "In development" chip and a delivery date ("Week of Nov 2" for Lids Hand Off, "TBD" for NYC Pull Up). It's static HTML, so edit the cards in both `onesheet.html` and `campaign.html` when dates are set, along with the section text on each page and the matching `TIMELINE` rows in `data/stats.js`. |
+| Long-form YouTube | On the one-sheet, the first section after the hero. Lids Hand Off is a full-width card with the Vimeo preview embedded (16:9), a "Preview" chip, a note that final graphics and a small edit at the end are in progress, and a button that emails notes to connect@8tivlabs.com. NYC Pull Up is a smaller card below it. On the case study it's still two cards ("Lids Hand Off" and "Fits From The Streets x LIDS: NYC Pull Up"), each with a red top edge, YouTube icon, "In development" chip and a delivery date ("Week of Nov 2" for Lids Hand Off, "TBD" for NYC Pull Up). It's static HTML, so edit the cards in both `onesheet.html` and `campaign.html` when dates are set, along with the section text on each page and the matching `TIMELINE` rows in `data/stats.js`. |
 | Timeline | Built from the `TIMELINE` array. The latest dated item that has already happened is red, earlier ones are filled gray, and later ones are hollow. |
 
 ## Updating stats

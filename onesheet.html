@@ -447,6 +447,20 @@
     .lf-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font-size: var(--text-sm); color: var(--text-2); }
     .lf-meta b { color: var(--text-hi); font-weight: 600; }
 
+    /* the preview cut, at the top of the page */
+    .lf-section { margin-top: var(--space-5); }
+    .longform .lf-feature { grid-column: 1 / -1; }
+    .lf-video {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      margin: calc(var(--space-5) * -1) calc(var(--space-5) * -1) var(--space-2);
+      background: #000;
+    }
+    .lf-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .lf-note { max-width: 60ch; }
+    .lf-feature .ep-cta { align-self: flex-start; margin-top: 0; }
+    .totals-band { margin-top: var(--space-7); }
+
     footer {
       margin-top: var(--space-7);
       padding-top: var(--space-4);
@@ -481,6 +495,7 @@
     @media (max-width: 679px) {
       .longform { grid-template-columns: 1fr; gap: var(--space-4); }
       .lf { padding: var(--space-4) var(--space-3); }
+      .lf-video { margin: calc(var(--space-4) * -1) calc(var(--space-3) * -1) var(--space-2); }
       .masthead .by > span { display: none; }
       .slide { grid-template-columns: 1fr; padding: var(--space-4) var(--space-3); }
       .slide .phone { max-width: 220px; margin: 0 auto; }
@@ -532,7 +547,41 @@
       </div>
     </div>
 
-    <div class="reveal" data-reveal>
+    <section class="lf-section" aria-labelledby="lf-title">
+      <div class="section-head">
+        <h2 id="lf-title">Long-form YouTube</h2>
+        <p>Lids Hand Off is ready to preview. The NYC Pull Up date is to be confirmed.</p>
+      </div>
+      <div class="longform">
+        <article class="lf lf-feature reveal" data-reveal>
+          <div class="lf-video">
+            <iframe src="https://player.vimeo.com/video/1245966186?h=51917a8b43&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" title="Lids Hand Off preview"></iframe>
+          </div>
+          <div class="lf-top">
+            <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
+            <span class="chip is-live">Preview</span>
+          </div>
+          <h3>Lids Hand Off</h3>
+          <p class="lf-note">We're still working on the final graphics and a small edit at the end. Send any notes by email.</p>
+          <a class="ep-cta" href="mailto:connect@8tivlabs.com?subject=Lids%20Hand%20Off%20notes">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+            Email notes to connect@8tivlabs.com
+          </a>
+        </article>
+        <article class="lf reveal" data-reveal>
+          <div class="lf-top">
+            <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
+            <span class="chip">In development</span>
+          </div>
+          <h3>Fits From The Streets x LIDS: NYC Pull Up</h3>
+          <p class="lf-meta"><span>Long-form YouTube</span><span>Delivery <b>TBD</b></span></p>
+        </article>
+      </div>
+    </section>
+
+    <div class="totals-band reveal" data-reveal>
       <p class="organic">All engagement is organic</p>
       <div class="totals" id="totals"></div>
       <p class="totals-note" id="totals-note"></p>
@@ -559,31 +608,6 @@
           <p>The primary KPI for every drop.</p>
           <p>Click-through is treated as upside, not a committed metric.</p>
         </div>
-      </div>
-    </section>
-
-    <section aria-labelledby="lf-title">
-      <div class="section-head">
-        <h2 id="lf-title">Long-form YouTube</h2>
-        <p>Two long-form pieces are in development. Lids Hand Off delivers the week of Nov 2, and the NYC Pull Up date is to be confirmed.</p>
-      </div>
-      <div class="longform">
-        <article class="lf reveal" data-reveal>
-          <div class="lf-top">
-            <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
-            <span class="chip">In development</span>
-          </div>
-          <h3>Lids Hand Off</h3>
-          <p class="lf-meta"><span>Long-form YouTube</span><span>Delivery <b>Week of Nov 2</b></span></p>
-        </article>
-        <article class="lf reveal" data-reveal>
-          <div class="lf-top">
-            <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
-            <span class="chip">In development</span>
-          </div>
-          <h3>Fits From The Streets x LIDS: NYC Pull Up</h3>
-          <p class="lf-meta"><span>Long-form YouTube</span><span>Delivery <b>TBD</b></span></p>
-        </article>
       </div>
     </section>
 
