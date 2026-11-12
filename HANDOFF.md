@@ -26,6 +26,10 @@ The source images live in `graphics/`, which is git-ignored. The web-sized copie
 - `guard.ts` also protects `/data/*`. The `lids_campaign` cookie opens `/img/ep*` and `/data/*` only, so case study visitors can't reach the one-sheet or this spec. The one-sheet cookie doesn't open `/campaign`.
 - If `CAMPAIGN_PASSWORD` isn't set, `/campaign` stays locked and its sign-in shows "Couldn't check the password. Try again in a moment."
 
+## Analytics
+- Every page (`index.html`, `onesheet.html`, `campaign.html`, `campaign-signin.html`, `popup.html`) loads Google Analytics with the measurement ID `G-H4Q3S7VS5R`, the same property as 8tivlabs.com. The tag sits at the top of each `<head>`. Filter by hostname in Analytics to see this site alone.
+- The pop-up form is a ClickUp iframe, so Analytics counts visits to `/popup` but not form submissions.
+
 ## Layout
 - The sign-in page is black on white: a centered 340px column with the logo, LIDS, the transcript, then the form.
 - The one-sheet's max content width is `--page-max` (1180px), centered. Side gutters are `--space-3` (16px) on mobile and `--space-5` (40px) from 760px up.
