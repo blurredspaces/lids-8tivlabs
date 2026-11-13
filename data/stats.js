@@ -7,7 +7,7 @@
   - `asOf` on an episode overrides the dates below when its numbers were pulled on another day.
   - Leave `stats` as null until an episode has numbers, and `image` as null until there is a still.
 */
-const STATS_UPDATED = '2026-10-30';     // Instagram views, likes, comments
+const STATS_UPDATED = '2026-11-13';     // Instagram views (likes and comments last pulled 2026-10-30)
 const INSIGHTS_UPDATED = '2026-10-30';  // Instagram Insights detail
 const YOUTUBE_UPDATED = '2026-10-20';   // YouTube Shorts on the @lids channel
 const EPISODES = [
@@ -18,7 +18,7 @@ const EPISODES = [
     instagram: 'https://www.instagram.com/p/Dd4xDmvuIDm/',
     image: 'img/ep1.jpg',
     alt: 'Episode 1 Instagram post: subject in a black White Sox cap',
-    stats: { views: 29847, likes: 942, comments: 145 },
+    stats: { views: 24452, likes: 942, comments: 145 },
     insights: { viewers: 20684, reposts: 67, shares: 69, saves: 44, avgWatchSec: 8, follows: 0 },
     youtube: { views: 350 },
   },
@@ -29,7 +29,7 @@ const EPISODES = [
     instagram: 'https://www.instagram.com/p/DeKzZbSB7IN/',
     image: 'img/ep2.jpg',
     alt: 'Episode 2 Instagram post: subject in a burgundy leather coat, hands on her cap',
-    stats: { views: 23645, likes: 694, comments: 161 },
+    stats: { views: 31241, likes: 694, comments: 161 },
     insights: { viewers: 15086, reposts: 52, shares: 49, saves: 40, avgWatchSec: 6, follows: 0 },
     youtube: { views: 550 },
   },
@@ -40,7 +40,7 @@ const EPISODES = [
     instagram: 'https://www.instagram.com/p/Dec17ezPuL8/',
     image: 'img/ep3.jpg',
     alt: 'Episode 3 subject in a blue 76ers cap',
-    stats: { views: 21619, likes: 931, comments: 137 },
+    stats: { views: 27378, likes: 931, comments: 137 },
     insights: { viewers: 14917, reposts: 78, shares: 77, saves: 31, avgWatchSec: 10, follows: 0 },
     youtube: { views: 334 },
   },
@@ -51,7 +51,7 @@ const EPISODES = [
     instagram: 'https://www.instagram.com/reel/DevCrPsh7he/',
     image: 'img/ep4.jpg',
     alt: 'Episode 4 subject, a child in a red Cardinals World Series champions cap, at a ballfield fence',
-    stats: { views: 18468, likes: 461, comments: 94 },
+    stats: { views: 22489, likes: 461, comments: 94 },
     insights: { viewers: 11010, reposts: 92, shares: 80, saves: 11, avgWatchSec: 7, follows: 0 },
     youtube: null,
   },
