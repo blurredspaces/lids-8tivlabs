@@ -10,7 +10,7 @@ Static pages, no build step.
 - **`campaign-signin.html` (case study sign-in).** One password field in the sign-in page's white style. It appears at `/campaign` until the visitor signs in.
 - **`data/stats.js` (shared numbers).** Stats, dates and the timeline for both the one-sheet and the case study. Update numbers here only.
 
-- **`popup.html` (pop-up entry form, at `/popup`).** The old address, `/lids-popup`, redirects here through `_redirects`. A public page with no password. It holds only the ClickUp entry form for the fitsfromthestreets x LIDS NYC Times Square pop-up, on a dark background that matches the form. ClickUp's embed script sets the form's height, so the page scrolls and the form doesn't scroll inside itself.
+- **`pullup.html` (pop-up entry form, at `/pullup`).** The old addresses, `/popup` and `/lids-popup`, redirect here through `_redirects`. A public page with no password. It holds only the ClickUp entry form for the fitsfromthestreets x LIDS NYC Times Square pop-up, on a dark background that matches the form. ClickUp's embed script sets the form's height, so the page scrolls and the form doesn't scroll inside itself.
 
 The source images live in `graphics/`, which is git-ignored. The web-sized copies the pages use are in `img/`.
 
@@ -27,8 +27,8 @@ The source images live in `graphics/`, which is git-ignored. The web-sized copie
 - If `CAMPAIGN_PASSWORD` isn't set, `/campaign` stays locked and its sign-in shows "Couldn't check the password. Try again in a moment."
 
 ## Analytics
-- Every page (`index.html`, `onesheet.html`, `campaign.html`, `campaign-signin.html`, `popup.html`) loads Google Analytics with the measurement ID `G-BZ2HTJYRRG`, a separate data stream from the one on 8tivlabs.com (`G-H4Q3S7VS5R`). The tag sits at the top of each `<head>`.
-- The pop-up form is a ClickUp iframe, so Analytics counts visits to `/popup` but not form submissions.
+- Every page (`index.html`, `onesheet.html`, `campaign.html`, `campaign-signin.html`, `pullup.html`) loads Google Analytics with the measurement ID `G-BZ2HTJYRRG`, a separate data stream from the one on 8tivlabs.com (`G-H4Q3S7VS5R`). The tag sits at the top of each `<head>`.
+- The pop-up form is a ClickUp iframe, so Analytics counts visits to `/pullup` but not form submissions.
 
 ## Layout
 - The sign-in page is black on white: a centered 340px column with the logo, LIDS, the transcript, then the form.

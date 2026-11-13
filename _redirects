@@ -1,3 +1,5 @@
-# the old address for the pop-up form
-/lids-popup       /popup  301
-/lids-popup.html  /popup  301
+# old addresses for the pop-up form
+/lids-popup       /pullup  301
+/lids-popup.html  /pullup  301
+/popup            /pullup  301
+/popup.html       /pullup  301
