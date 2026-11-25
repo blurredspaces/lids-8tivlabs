@@ -681,7 +681,12 @@
         ${ep.title ? `<p class="ep-title">${esc(ep.title)}</p>` : ''}
       </div>`;
 
-    const youtube = (ep) => !ep.youtube ? '' : `
+    const youtube = (ep) => !ep.youtube ? (ep.youtubeNote ? `
+      <div class="yt">
+        <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
+        <p class="yt-what"><b>YouTube Shorts</b>on the @lids channel</p>
+        <p class="yt-views">N/A<span>${esc(ep.youtubeNote)}</span></p>
+      </div>` : '') : `
       <div class="yt">
         <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
         <p class="yt-what"><b>YouTube Shorts</b>on the @lids channel</p>
@@ -767,10 +772,11 @@
     if (withStats.length && upcoming.children.length) upcoming.style.marginTop = 'var(--space-5)';
     if (upcoming.children.length === 1) upcoming.style.gridTemplateColumns = 'minmax(0, 560px)';
 
-    // timeline: past items filled in, the latest one marked in red
-    const current = TIMELINE.filter((t) => t.date && isOut(t.date)).pop();
+    // timeline: past items filled in; items marked `live` are red, otherwise the latest past one is
+    const anyLive = TIMELINE.some((t) => t.live);
+    const current = anyLive ? null : TIMELINE.filter((t) => t.date && isOut(t.date)).pop();
     document.getElementById('timeline').innerHTML = TIMELINE.map((t) => {
-      const state = !t.date ? '' : t === current ? 'is-now' : isOut(t.date) ? 'is-done' : '';
+      const state = t.live ? 'is-now' : !t.date ? '' : t === current ? 'is-now' : isOut(t.date) ? 'is-done' : '';
       return `<li class="${state}"><span class="dot" aria-hidden="true"></span>
         <span class="date">${t.date ? short(t.date) : esc(t.label)}</span>
         <span class="what">${esc(t.what)}${t.phase ? `<span class="phase">${esc(t.phase)}</span>` : ''}</span></li>`;

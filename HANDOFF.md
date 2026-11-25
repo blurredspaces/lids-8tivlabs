@@ -68,14 +68,14 @@ Sign-in (`index.html`): `--paper` #ffffff, `--ink` #000000, `--ink-dim` #6b6b6b,
 | Phone mockup | The frame is 1506×3102. Its transparent screen spans x 44–1466 and y 32–3069, inset as `left 2.92% / right 2.66% / top 1.03% / bottom 1.06%`, with `border-radius: 15% / 7.2%`. Screen images use `object-fit: cover` anchored to the bottom. |
 | Status chip | Computed from each episode's `date` against the viewer's local date: "Out now" (red) on or after the date, otherwise "Coming up". |
 | Long-form YouTube | On the one-sheet, the first section after the hero. EP1, Lids Hand Off, is a full-width card with the YouTube video (`_E_Uo4BDQ1s`, on the @lids channel) embedded and playable at 16:9 through youtube-nocookie.com, a "Live on @lids" chip and a "Watch on YouTube" button. EP2, Fits From The Streets x LIDS: NYC Pull Up, sits beside it with an "In production" chip and the shoot date. |
-| Timeline | Built from the `TIMELINE` array. The latest dated item that has already happened is red, earlier ones are filled gray, and later ones are hollow. |
+| Timeline | Built from the `TIMELINE` array. Items with `live: true` are red (right now, long-form EP1). If none are live, the latest dated item that has already happened is red instead. Past dated items are filled gray, and undated or later ones are hollow. An undated item shows its `label` in the date column. |
 
 ## Updating stats
 Edit `data/stats.js`. Both the one-sheet and the case study read it:
 - `STATS_UPDATED` is the date of the latest Instagram views, likes and comments, `INSIGHTS_UPDATED` is the date of the detailed Insights numbers, and `YOUTUBE_UPDATED` is the date of the @lids YouTube Shorts views. Every "as of" label reads from these.
 - `stats: { views, likes, comments }` holds the latest Instagram numbers. Views can be exact (`28209`) or rounded the way Instagram shows them (`'21.2K'`). Rounded values display and total in K format, and if any episode is rounded, the Instagram views total is shown rounded too.
 - `insights: { viewers, reposts, shares, saves, avgWatchSec, follows }` comes from Instagram Insights. Leave out any you don't have, or set the whole thing to `null`. When `INSIGHTS_UPDATED` differs from `STATS_UPDATED`, a note under the grid gives the Insights date.
-- `youtube: { views }` is the @lids YouTube Shorts count. Use `null` until the Short is live.
+- `youtube: { views }` is the @lids YouTube Shorts count. Use `null` until the Short is live. Add `youtubeNote` (for example `'Not uploaded'`) to show "N/A" with that note on the one-sheet instead of hiding the strip. The case study ignores it.
 - `title` is the YouTube Shorts title without the "The Handoff Ep. N" part.
 - `asOf` on an episode gives that episode's numbers their own date, for when they were pulled on a different day. The slide and the totals note both say so.
 - `stats.likes` can be left out. That episode then has no likes cell, and the totals note says its likes aren't counted.
