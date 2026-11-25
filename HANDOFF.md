@@ -67,7 +67,7 @@ Sign-in (`index.html`): `--paper` #ffffff, `--ink` #000000, `--ink-dim` #6b6b6b,
 | Upcoming card | For episodes without stats: a small phone, a status line and, when available, the YouTube strip. |
 | Phone mockup | The frame is 1506×3102. Its transparent screen spans x 44–1466 and y 32–3069, inset as `left 2.92% / right 2.66% / top 1.03% / bottom 1.06%`, with `border-radius: 15% / 7.2%`. Screen images use `object-fit: cover` anchored to the bottom. |
 | Status chip | Computed from each episode's `date` against the viewer's local date: "Out now" (red) on or after the date, otherwise "Coming up". |
-| Long-form YouTube | On the one-sheet, the first section after the hero. EP1, Lids Hand Off, is a full-width card with the YouTube video (`_E_Uo4BDQ1s`, on the @lids channel) embedded and playable at 16:9 through youtube-nocookie.com, a "Live on @lids" chip and a "Watch on YouTube" button. EP2, Fits From The Streets x LIDS: NYC Pull Up, sits beside it with an "Up next" chip and the shoot date. |
+| Long-form YouTube | On the one-sheet, the first section after the hero. EP1, Lids Hand Off, is a full-width card with the YouTube video (`_E_Uo4BDQ1s`, on the @lids channel) embedded and playable at 16:9 through youtube-nocookie.com, a "Live on @lids" chip and a "Watch on YouTube" button. EP2, Fits From The Streets x LIDS: NYC Pull Up, sits beside it with an "In production" chip and the shoot date. |
 | Timeline | Built from the `TIMELINE` array. The latest dated item that has already happened is red, earlier ones are filled gray, and later ones are hollow. |
 
 ## Updating stats

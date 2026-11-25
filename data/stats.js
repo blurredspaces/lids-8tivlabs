@@ -64,6 +64,6 @@ const TIMELINE = [
   { date: '2026-10-13', what: 'Episode 3', phase: 'Phase 2: Sports Equinox (NBA, NFL, MLB)' },
   { date: '2026-10-20', what: 'Episode 4', phase: 'Phase 2: Sports Equinox (NBA, NFL, MLB)' },
   { label: 'Live', what: 'Long-form YouTube EP1: Lids Hand Off, on the @lids channel' },
-  { date: '2026-11-14', what: 'Long-form YouTube EP2: Fits From The Streets x LIDS: NYC Pull Up shoot at Lids NYC (up next)' },
+  { date: '2026-11-14', what: 'Long-form YouTube EP2: Fits From The Streets x LIDS: NYC Pull Up shot at Lids NYC (in production)' },
   { label: 'Date TBD', what: 'In-store activation, NYC' },
 ];
