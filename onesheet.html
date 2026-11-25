@@ -173,7 +173,7 @@
       box-shadow: var(--shadow-panel);
     }
     .totals > div { background: var(--surface); padding: var(--space-4); }
-    .totals .num { font-size: var(--num-md); }
+    .totals .num { font-size: calc(var(--num-md) * 1.2); }
     .totals .label { font-size: var(--text-sm); color: var(--text-2); margin-top: var(--space-2); }
     .totals > div:first-child .num { color: var(--red); }
     .totals-note { font-size: var(--text-xs); color: var(--text-2); margin-top: var(--space-3); }
@@ -720,10 +720,10 @@
     const plural = (n) => `${n} episode${n === 1 ? '' : 's'}`;
 
     document.getElementById('totals').innerHTML = [
-      [total(withStats.map((ep) => ep.stats.views)), 'Instagram views'],
+      [total(withStats.map((ep) => ep.stats.views)), 'Total Instagram Views'],
       [total(withYouTube.map((ep) => ep.youtube.views)), 'YouTube Shorts views on @lids'],
-      [total(withLikes.map((ep) => ep.stats.likes)), 'Instagram likes'],
-      [total(withStats.map((ep) => ep.stats.comments)), 'Instagram comments'],
+      [total(withLikes.map((ep) => ep.stats.likes)), 'Total Instagram Likes'],
+      [total(withStats.map((ep) => ep.stats.comments)), 'Total Instagram Comments'],
     ].map(([t, label]) => `<div>${count(asInput(t))}<p class="label">${label}</p></div>`).join('');
     const later = withStats.filter((ep) => ep.asOf && ep.asOf !== STATS_UPDATED)
       .map((ep) => `Episode ${ep.number} as of ${brief(ep.asOf)}`);
