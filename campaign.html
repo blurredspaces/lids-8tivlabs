@@ -417,6 +417,16 @@
     }
     .lf-meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font-size: var(--text-sm); color: var(--text-2); }
     .lf-meta b { color: var(--text-hi); font-weight: 600; }
+    /* the live long-form episode, playable in the YouTube stage */
+    .lf-feature { margin-top: var(--space-5); }
+    .lf-video {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      margin: calc(var(--space-5) * -1) calc(var(--space-5) * -1) var(--space-2);
+      background: #000;
+    }
+    .lf-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .lf-feature .ep-cta { align-self: flex-start; margin-top: 0; }
 
     footer {
       margin-top: var(--space-7);
@@ -451,6 +461,7 @@
     @media (max-width: 679px) {
       .longform { grid-template-columns: 1fr; gap: var(--space-4); }
       .lf { padding: var(--space-4) var(--space-3); }
+      .lf-video { margin: calc(var(--space-4) * -1) calc(var(--space-3) * -1) var(--space-2); }
       .masthead .by > span { display: none; }
       .slide { grid-template-columns: 1fr; padding: var(--space-4) var(--space-3); }
       .slide .phone { max-width: 220px; margin: 0 auto; }
@@ -653,12 +664,29 @@
       <section class="stage" data-stage aria-labelledby="yt-title">
         <div class="section-head">
           <h2 id="yt-title">Then on to the @lids YouTube page</h2>
-          <p>The Handoff also gives the channel new content. Shorts are the start, and long-form is the next leg.</p>
+          <p>The Handoff also gives the channel new content. Shorts came first, and the first long-form episode is now live.</p>
         </div>
         <div class="reveal" data-reveal>
           <div class="yt" id="yt-total"></div>
           <p class="totals-note" id="yt-note"></p>
         </div>
+        <article class="lf lf-feature reveal" data-reveal>
+          <div class="lf-video">
+            <iframe src="https://www.youtube-nocookie.com/embed/_E_Uo4BDQ1s?start=15&amp;rel=0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
+                    title="The Handoff: The Hat Finishes the Fit | Lids x Fits From The Streets"></iframe>
+          </div>
+          <div class="lf-top">
+            <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
+            <span class="chip is-live">Live on @lids</span>
+          </div>
+          <h3>EP1: Lids Hand Off</h3>
+          <a class="ep-cta" href="https://www.youtube.com/watch?v=_E_Uo4BDQ1s&amp;t=15s" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>
+            Watch on YouTube
+          </a>
+        </article>
       </section>
     </div>
 
@@ -668,14 +696,6 @@
           <h2 id="next-title">Still moving</h2>
         </div>
         <div class="longform">
-          <article class="lf reveal" data-reveal>
-            <div class="lf-top">
-              <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
-              <span class="chip">In development</span>
-            </div>
-            <h3>Lids Hand Off</h3>
-            <p class="lf-meta"><span>Long-form YouTube</span><span>Delivery <b>Week of Nov 2</b></span></p>
-          </article>
           <article class="lf reveal" data-reveal>
             <div class="lf-top">
               <svg class="yt-icon" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#fa273d"/><path d="M11 6l7 4-7 4z" fill="#fff"/></svg>
