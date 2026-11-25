@@ -7,7 +7,7 @@
   - `asOf` on an episode overrides the dates below when its numbers were pulled on another day.
   - Leave `stats` as null until an episode has numbers, and `image` as null until there is a still.
 */
-const STATS_UPDATED = '2026-11-25';     // Instagram views, likes, comments (Episode 2: see asOf)
+const STATS_UPDATED = '2026-11-25';     // Instagram views, likes, comments
 const INSIGHTS_UPDATED = '2026-11-25';  // Instagram Insights detail
 const YOUTUBE_UPDATED = '2026-11-25';   // YouTube Shorts on the @lids channel
 const EPISODES = [
@@ -29,9 +29,8 @@ const EPISODES = [
     instagram: 'https://www.instagram.com/p/DeKzZbSB7IN/',
     image: 'img/ep2.jpg',
     alt: 'Episode 2 Instagram post: subject in a burgundy leather coat, hands on her cap',
-    asOf: '2026-11-13', // views from Nov 13; likes, comments and Insights from Oct 30
-    stats: { views: 31241, likes: 694, comments: 161 },
-    insights: { viewers: 15086, reposts: 52, shares: 49, saves: 40, avgWatchSec: 6, follows: 0 },
+    stats: { views: 32582, likes: 829, comments: 162 },
+    insights: { viewers: 22609, reposts: 57, shares: 59, saves: 55, avgWatchSec: 6, follows: 0 },
     youtube: { views: 354 },
   },
   {
